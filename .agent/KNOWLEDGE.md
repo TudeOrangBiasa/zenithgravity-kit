@@ -13,5 +13,6 @@ This file contains project-specific logic, architectural decisions, and business
 - **ADR 003: Auto-Discovery Environment**: Instead of guessing the tech stack or execution environment (Native vs Docker/DDEV), `workflows` must execute `detect_stack.py` first to inject context dynamically.
 - **ADR 004: Natural Language Auto-Routing**: To enhance user experience, explicit slash commands (e.g., `/create`) are replaced with Intent Mapping inside `GEMINI.md` and `intelligent-routing`, allowing casual human language to trigger strict workflows behind the scenes.
 - **ADR 005: Terminal Interaction Protocol**: To address the LLM's "Blind Execution Flaw" (assuming a command worked without checking), the `model-consistency` skill enforces mandatory verification of STDOUT/STDERR and the use of non-interactive flags (e.g., `-y`).
+- **ADR 006: State Anchors via memory/**: The `.agent/memory/` structure is used to inject persistent context (such as design system preferences or established API contracts) explicitly before execution, preventing context loss and style drift across continuous sessions.
 
 _(Add more project-specific knowledge here as the project evolves)_

@@ -11,6 +11,7 @@ A low-effort, high-reliability native kit for Antigravity IDE with stable routin
 - `skills/` -> modular capabilities. Divided conceptually into:
   - **Core Skills**: Framework-agnostic (e.g., `orchestrator`, `model-consistency`, `frontend-design`). These ship with the base kit.
   - **Installable Skills**: Framework/stack-specific (e.g., `laravel-expert`, `react-patterns`). Added per-project.
+- `memory/` -> custom state anchors (persistent context injection)
 - `workflows/` -> deterministic step-by-step operational recipes
 - `scripts/` -> optional automation helpers
 
@@ -47,6 +48,10 @@ A low-effort, high-reliability native kit for Antigravity IDE with stable routin
 
 ## Extension Patterns
 
+### Detailed Guide
+
+For a comprehensive guide on extending agents, rules, memory, scripts, skills, and workflows, please refer to the dedicated documentation at `docs/EXTENDING.md`.
+
 ### Adding a New Skill
 
 1. Create a new folder: `.agent/skills/<skill-name>/`
@@ -57,4 +62,4 @@ A low-effort, high-reliability native kit for Antigravity IDE with stable routin
 
 1. Create `.agent/agents/<agent-name>.md`.
 2. Define the `tools` and `skills` the agent needs in the YAML frontmatter.
-3. Register the new agent in `.agent/skills/intelligent-routing/SKILL.md`'s selection matrix.
+3. Register the new agent in `.agent/rules/GEMINI.md` for proper routing.

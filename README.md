@@ -7,7 +7,9 @@ An **Agentic Architecture Framework** designed to transform idle LLMs into disci
 ## 📚 Deep-Dive Documentation
 
 - [Architecture & Theory (The "Why")](docs/ARCHITECTURE.md)
-- [How to Install Custom Skills & Agents](docs/EXTENDING.md)
+- [How to Extend the Architecture (Agents, Skills, Memory, etc.)](docs/EXTENDING.md)
+- [Codebase Map & Directory Structure](CODEBASE.md)
+- [Native Agent Architecture](.agent/ARCHITECTURE.md)
 
 ---
 

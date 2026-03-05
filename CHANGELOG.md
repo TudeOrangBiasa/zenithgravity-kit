@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Extension Documentation**: Completely updated `docs/EXTENDING.md`, `.agent/KNOWLEDGE.md`, `.agent/ARCHITECTURE.md`, and `CODEBASE.md` to document the entire `.agent/` directory structure, explicitly clarifying the distinction between `agents/` and `skills/`, and introducing the `memory/` directory as a custom feature folder for state anchors.
 - **`readme` command**: Added a new command to the CLI (`zenithgravity readme`) to easily display the project's documentation in the terminal.
 - **Global Installation Support**: Updated `README.md` with explicit instructions for global installation and direct CLI usage.
 
