@@ -5,6 +5,17 @@ All notable changes to the **Zenithgravity-kit** project will be documented in t
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-03-05
+
+### Added
+
+- **`readme` command**: Added a new command to the CLI (`zenithgravity readme`) to easily display the project's documentation in the terminal.
+- **Global Installation Support**: Updated `README.md` with explicit instructions for global installation and direct CLI usage.
+
+### Fixed
+
+- **CLI Syntax Error**: Corrected a regression in `bin/cli.js` where the `printHelp` function declaration was accidentally removed.
+
 ## [1.0.1] - 2026-03-05
 
 ### Fixed

@@ -19,12 +19,14 @@ function printHelp() {
 
 Usage:
   npx zenithgravity <command>
+  zenithgravity <command> (if installed globally)
 
 Commands:
   init      Initialize the .agent directory in your current project.
             (Copies the kit's rules, skills, memory, and workflows).
   sync      Run the memory sync script in the current project to update
             the AI's design memory based on local package.json dependencies.
+  readme    Display the contents of the Zenithgravity-kit README.
   help      Show this help message.
 `);
 }
@@ -82,6 +84,17 @@ if (command === 'init') {
   } else {
     console.error('❌ Error: .agent/scripts/sync_memory.py not found.');
     console.error('Did you run "npx zenithgravity init" in this project first?');
+    process.exit(1);
+  }
+} else if (command === 'readme') {
+  const readmePath = path.join(__dirname, '..', 'README.md');
+  if (fs.existsSync(readmePath)) {
+    const readmeContent = fs.readFileSync(readmePath, 'utf8');
+    console.log('\n--- Zenithgravity-kit README ---\n');
+    console.log(readmeContent);
+    console.log('\n--- End of README ---\n');
+  } else {
+    console.error('❌ Error: README.md not found.');
     process.exit(1);
   }
 } else {

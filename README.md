@@ -41,8 +41,25 @@ This guarantees that **every single output** is rigorously aligned with your exa
 
 ## 🛠️ Installation & CLI
 
+### Option A: Direct Usage (No Install)
+
 You can inject this architecture into any new or existing project with a single command:
 
 ```bash
 npx zenithgravity init
+```
+
+### Option B: Global Installation
+
+For a faster experience, install the kit globally:
+
+```bash
+npm install -g zenithgravity-kit
+```
+
+Once installed, you can use the commands directly:
+
+```bash
+zenithgravity init
+zenithgravity readme
 ```
