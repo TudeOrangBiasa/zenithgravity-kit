@@ -1,13 +1,21 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+
+// Read the package.json to get the version
+const packageJsonPath = path.join(__dirname, '../package.json');
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+
+const version = packageJson.version;
 
 const args = process.argv.slice(2);
 const command = args[0];
 
 function printHelp() {
   console.log(`
-🚀 Zenithgravity-kit CLI
+🚀 Zenithgravity-kit CLI v${version}
 
 Usage:
   npx zenithgravity <command>
@@ -46,7 +54,7 @@ if (command === 'init') {
         process.exit(1);
     }
     
-    console.log('✅ Zenithgravity-kit successfully initialized!');
+    console.log('✅ Zenithgravity-kit v${version} successfully initialized!');
     console.log('📁 The .agent directory has been copied to your project.');
     console.log('You can now use Zenithgravity Agentic workflows in this workspace.');
   } catch (err) {
