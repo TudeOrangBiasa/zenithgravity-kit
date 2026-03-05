@@ -48,7 +48,7 @@ This guarantees that **every single output** is rigorously aligned with your exa
 You can inject this architecture into any new or existing project with a single command:
 
 ```bash
-npx zenithgravity init
+npx zenithgravity-kit init
 ```
 
 ### Option B: Global Installation

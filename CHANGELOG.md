@@ -5,7 +5,13 @@ All notable changes to the **Zenithgravity-kit** project will be documented in t
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.2] - 2026-03-05
+## [1.0.4] - 2026-03-05
+
+### Fixed
+
+- **README Documentation**: Corrected the `npx` command to use the full package name (`npx zenithgravity-kit init`) to avoid 404 errors during initialization.
+
+## [1.0.3] - 2026-03-05
 
 ### Added
 
