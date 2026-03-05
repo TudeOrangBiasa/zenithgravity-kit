@@ -1,6 +1,6 @@
 {
   "name": "zenithgravity-kit",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An Agentic Architecture Framework designed to transform idle LLMs into disciplined, domain-aware Software Engineers.",
   "main": "bin/cli.js",
   "bin": {
