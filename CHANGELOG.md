@@ -5,6 +5,13 @@ All notable changes to the **Zenithgravity-kit** project will be documented in t
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-03-05
+
+### Fixed
+
+- **CLI Package Structure**: Moved `cli.js` to `bin/cli.js` and updated `package.json` (`main` and `bin` fields) to resolve NPM publish errors regarding invalid bin scripts.
+- **NPM Publishing**: Cleaned up package references. Removed the `src/` directory which was redundant.
+
 ## [1.0.0] - 2026-03-05
 
 ### Added

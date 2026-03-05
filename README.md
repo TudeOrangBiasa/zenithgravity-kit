@@ -39,9 +39,9 @@ This guarantees that **every single output** is rigorously aligned with your exa
 
 ---
 
-## 🛠️ Installation & CLI (Coming Soon)
+## 🛠️ Installation & CLI
 
-Soon, you will be able to inject this architecture into any new or existing project with a single command:
+You can inject this architecture into any new or existing project with a single command:
 
 ```bash
 npx zenithgravity init
