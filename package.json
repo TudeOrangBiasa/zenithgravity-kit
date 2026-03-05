@@ -1,0 +1,29 @@
+{
+  "name": "zenithgravity-kit",
+  "version": "1.0.0",
+  "description": "An Agentic Architecture Framework designed to transform idle LLMs into disciplined, domain-aware Software Engineers.",
+  "main": "src/cli.js",
+  "bin": {
+    "zenithgravity": "./bin/zenithgravity.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    ".agent",
+    "docs",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "agentic",
+    "ai",
+    "llm",
+    "workflow",
+    "code-generation"
+  ],
+  "author": "Todayz",
+  "license": "ISC",
+  "type": "commonjs"
+}
