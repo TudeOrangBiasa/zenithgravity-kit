@@ -4,7 +4,7 @@
   "description": "An Agentic Architecture Framework designed to transform idle LLMs into disciplined, domain-aware Software Engineers.",
   "main": "src/cli.js",
   "bin": {
-    "zenithgravity": "./bin/zenithgravity.js"
+    "zenithgravity": "bin/zenithgravity.js"
   },
   "files": [
     "bin",
