@@ -9,7 +9,7 @@ A low-effort, high-reliability native kit for Antigravity IDE with stable routin
 - `rules/` -> always-on governance (`GEMINI.md` only)
 - `agents/` -> execution coordinators for simple vs complex task modes
 - `skills/` -> modular capabilities. Divided conceptually into:
-  - **Core Skills**: Framework-agnostic (e.g., `orchestrator`, `ux-humanist-designer`, `system-architect`, `database-architect`, `api-architect`, `sec-ops`, `devops-architect`). These ship with the base kit.
+  - **Core Skills**: Framework-agnostic (e.g., `orchestrator`, `ux-humanist-designer`, `system-architect`, `database-architect`, `api-architect`, `sec-ops`, `devops-architect`, `systematic-debugging`, `automation-engineer`). These ship with the base kit.
   - **Installable Skills**: Framework/stack-specific (e.g., `laravel-expert`, `react-patterns`). Added per-project.
 - `memory/` -> custom state anchors (persistent context injection)
 - `workflows/` -> deterministic step-by-step operational recipes

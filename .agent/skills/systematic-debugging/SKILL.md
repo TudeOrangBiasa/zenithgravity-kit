@@ -1,50 +1,63 @@
 ---
 name: systematic-debugging
-description: A 4-phase structured debugging methodology focusing on root cause analysis over trial and error.
+description: A 4-phase structured debugging methodology focusing on root cause analysis over trial and error. Use whenever the user reports a bug, crash, or an unexpected error message.
 metadata:
-  version: 2.0.0
-  priority: high
+  version: 1.0.0
+  priority: critical
 ---
 
-# Systematic Debugging Protocol
+# Systematic Debugging
 
-> **CRITICAL**: Use this protocol to prevent random guessing when fixing bugs.
+## Objective
 
-## 4-Phase Debugging Process
+Eradicate "trial and error" coding. When a bug or stack trace is encountered, you must not guess the fix. You must locate the exact fault line and perform a structured root-cause analysis (The "5 Whys") before modifying any code.
 
-An AI must never apply blind "Maybe if I change this..." fixes. You must follow these 4 phases sequentially:
+## Operating Rules
 
-### Phase 1: Reproduce
+### Phase 1: CLASSIFY & PARSE
 
-Understand precisely how the bug manifests.
+When an error is reported or discovered:
 
-- Ask: Can I reproduce this consistently? Do I understand the expected behavior?
+1. **Never guess**: Stop and identify the error category (Syntax, Type, Network, DB, Dependency, OOM, etc).
+2. **Extract Context**: Pinpoint the precise file path, line number, and error payload.
 
-### Phase 2: Isolate
+### Phase 2: REPRODUCE & ISOLATE
 
-Narrow down the exact source of the failure.
+1. Can you reproduce it using a test or CLI command? Do so if safe.
+2. If the error is obscured, isolate the environment (e.g., read the raw logs, use `-v` verbosity, or read `stderr` directly).
+3. Use Binary Search if the error location is vague: comment out halves of the logic until the error disappears.
 
-- Action: Check logs, error messages, and trace back through the function calls. What is the smallest unit of code triggering this?
+### Phase 3: ANALYZE (The 5 Whys)
 
-### Phase 3: Root Cause Analysis (Understand)
+Do not patch the symptom. Analyze the Root Cause.
+_Symptom_: Cannot read property 'name' of undefined.
+_Why 1?_: Because the `user` object is undefined.
+_Why 2?_: Because the DB query returned null.
+_Why 3?_: Because the `tenant_id` was missing from the query context.
+_Why 4?_: Because the auth middleware dropped the tenant header.
+_Root Cause_: Auth middleware fails to pass standard headers.
 
-Identify the structural or logical flaw. Do not stop at the symptom.
+### Phase 4: RESOLVE & PREVENT
 
-- Use the **5 Whys**:
-  - (Symptom): "The button doesn't work."
-  - (Why 1): "The onClick handler throws an error."
-  - (Why 2): "The user object is undefined."
-  - (Why 3): "The authentication state hasn't resolved yet." -> (Root Cause).
+1. Provide the **Immediate Fix** to unblock the user.
+2. Provide the **Proper Architectural Fix** (if different).
+3. Generate a **Verification Plan** (How do we prove this works? Can we write a `test`?).
 
-### Phase 4: Fix & Verify
+## Enforced Output Format
 
-Only after the root cause is understood, implement the fix.
+When asked to fix an error, your response MUST summarize your findings using this structure:
 
-- Ensure the fix doesn't cause regressions.
-- If necessary, run test scripts to verify.
+```markdown
+## Error Diagnosis
 
-## Anti-Patterns (BANNED BEHAVIORS)
+**Classification**: [Type / Scope]
+**Location**: `path/to/file.ext:LL`
 
-❌ **Ignoring Evidence**: "The error says X, but I'll fix Y."
-❌ **Hiding Errors**: Adding a `try-catch` block that does nothing just to suppress a warning.
-❌ **Shotgun Debugging**: Changing 5 different files simultaneously hoping one combination works.
+## Root Cause Analysis
+
+[1-2 sentences explaining the true underlying flaw]
+
+## Proposed Fix
+
+[The exact changes needed]
+```

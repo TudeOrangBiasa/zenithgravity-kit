@@ -129,6 +129,13 @@ def generate_report(project_root: str):
     report.append("Security & Review : Active -> `sec-ops` (Enforce OWASP principles & Code Review severity rating).")
     report.append("DevOps & CI/CD    : Active -> `devops-architect` (Enforce Container Immutability & Deployment pipelines).")
     
+    # Check for shell scripts or Makefiles
+    files = [f.name for f in root.iterdir() if f.is_file()]
+    if any(f.endswith(".sh") for f in files) or "Makefile" in files or ".bashrc" in files:
+        report.append("Automation Scripts: Active -> `automation-engineer` (Enforce Bash Standards & Bats Testing).")
+    
+    report.append("Error Resolution  : Active -> `systematic-debugging` (Enforce Root-Cause 5-Whys Global Trigger).")
+    
     prefix = get_command_prefix(env)
     if prefix:
         report.append(f"Command Prefix    : MUST prepend all commands with `{prefix}` (e.g., `{prefix}composer install`, `{prefix}npm install`)")

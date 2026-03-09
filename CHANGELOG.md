@@ -14,8 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Database Architect Skill**: Added `.agent/skills/database-architect/SKILL.md` to enforce normalization, index strategies, and N+1 query prevention.
 - **API Architect Skill**: Added `.agent/skills/api-architect/SKILL.md` to standardize REST patterns, JSON envelopes, and versioning.
 - **SecOps Skill**: Added `.agent/skills/sec-ops/SKILL.md` to introduce strict code review protocols and vulnerability scanning (OWASP) with critical/important severity ratings.
+- **DevOps Architect Skill**: Added `.agent/skills/devops-architect/SKILL.md` to enforce Container Immutability, CI/CD pipelines, and Observability patterns.
 - **System Architect Skill**: Added `.agent/skills/system-architect/SKILL.md` to enforce structural boundaries like Clean Architecture, DDD, Modular Monoliths, and Atomic Design on backend and full-stack generations.
-- **Architecture Memory Sync**: Upgraded `.agent/scripts/sync_memory.py` to recursively detect project topology up to depth 3 and output a new `.agent/memory/system-architecture.md` anchor.
+- **Systematic Debugging Skill**: Added `.agent/skills/systematic-debugging/SKILL.md` to enforce root-cause isolation (The "5 Whys") and eliminate AI trial-and-error guessing.
+- **Automation Engineer Skill**: Added `.agent/skills/automation-engineer/SKILL.md` to enforce strict Bash idempotency, `Bats` testing, and Git parallel PR resolution operations.
+- **RTK Protocol**: Added rule to `.agent/rules/GEMINI.md` to enforce prepending `rtk` (Rust Token Killer) to high-output CLI scans (ls, cat, grep, pytest) to compress context window consumption by 60-90%.
+- **Architecture Memory Sync**: Upgraded `.agent/scripts/sync_memory.py` to recursively detect project topology up to depth 3, detect Testing & QA frameworks, map CI/CD footprint, and output a new `.agent/memory/system-architecture.md` anchor.
 
 ### Changed
 

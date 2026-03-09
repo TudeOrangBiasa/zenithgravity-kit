@@ -57,3 +57,8 @@ If instructions conflict, resolve by precedence and state assumptions briefly.
 - No speculative architecture expansion.
 - No hidden behavior changes outside the requested task.
 - No verbose meta reasoning in user-facing responses.
+
+## 8) Token Efficiency (RTK Protocol)
+
+- **Context Compression**: When exploring the user's codebase, ALWAYS prepend high-output CLI commands with `rtk` to save 60-90% of token consumption (e.g. use `rtk ls`, `rtk git status`, `rtk grep`, `rtk pytest`, `rtk cat`).
+- If `rtk` fails or is not installed, gracefully fall back to the standard command (`ls`, `git`, `cat`, etc) without complaining to the user.
