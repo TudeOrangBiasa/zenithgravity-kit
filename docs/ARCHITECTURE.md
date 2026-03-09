@@ -25,6 +25,12 @@ An LLM has no memory of visual consistency between sessions.
 
 - **_How Zenithgravity-kit uses this_**: We introduced `.agent/memory/design-system.md`. By mandating the AI to read this file before any Frontend task, the AI is "anchored" to a specific reality (e.g., Shadcn UI, 8px spacing, subtle layering).
 
+### C. Token Efficiency Protocol (RTK)
+
+Standard AI scans (like `ls -R` or `git status`) drown the Context Window in repetitive noise.
+
+- **_How Zenithgravity-kit uses this_**: We enforce the `rtk` (Rust Token Killer) protocol in `GEMINI.md`. The AI is instructed to proxy heavy scans through `rtk` (e.g., `rtk pytest`, `rtk grep`), filtering out standard noise and slashing token consumption by 60%-90% while retaining structural awareness.
+
 ---
 
 ## 3. The Execution Flow (How it Works)

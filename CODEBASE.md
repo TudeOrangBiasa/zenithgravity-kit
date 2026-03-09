@@ -15,8 +15,9 @@ This document serves as the single source of truth for the AI to navigate this p
 ## Key Dependencies & Interactions
 
 1.  **Rule Enforcement Flow**: `GEMINI.md` applies globally -> Intent Mapping (Auto-Routing) -> Workflow or Specialist Skill.
-2.  **Skill Loading**: The IDE automatically discovers and loads skills by parsing the YAML frontmatter (`name`, `description`) of all `SKILL.md` files. No central index file is needed.
-3.  **Task Management**: The AI maintains local task states within `.gemini/` to avoid hallucinating progress.
+2.  **Token Compression Flow**: CLI explorations are intercepted by `rtk` (Rust Token Killer) to compress heavy outputs, preventing context exhaustion.
+3.  **Skill Loading**: The IDE automatically discovers and loads skills by parsing the YAML frontmatter (`name`, `description`) of all `SKILL.md` files. No central index file is needed.
+4.  **Task Management**: The AI maintains local task states within `.gemini/` to avoid hallucinating progress.
 
 ## Global Conventions
 
