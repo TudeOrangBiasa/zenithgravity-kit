@@ -43,7 +43,7 @@ graph TD
     C --> G[Orchestrator Skill: Deep Planning Mandate]
     G --> Z[Execution / Output]
 
-    F --> H[.agent/skills/frontend-design/SKILL.md]
+    F --> H[.agent/skills/ux-humanist-designer/SKILL.md]
     H --> I[Read: .agent/memory/design-system.md]
     I --> J[Apply Anti-Slop Rules & Component Literacy]
     J --> Z
@@ -56,6 +56,6 @@ graph TD
 
 - **`rules/GEMINI.md`**: The Constitution. It holds the highest authority, defining language policy, anti-hallucination rules, and the intent router.
 - **`memory/`**: The State files. Keeps track of the project's actual dependencies so the AI doesn't hallucinate non-existent libraries.
-- **`skills/`**: The Masks. Markdown files with YAML frontmatter containing specific domain expertise (e.g., `frontend-design`, `clean-code`).
+- **`skills/`**: The Masks. Markdown files with YAML frontmatter containing specific domain expertise (e.g., `ux-humanist-designer`, `clean-code`).
 - **`workflows/`**: The Pipelines. Step-by-step instructions for macro-tasks (e.g., `/create`, `/plan`).
 - **`scripts/`**: The Truth Checkers. Python/JS scripts that provide factual workspace data to the AI (e.g., `detect_stack.py`, `sync_memory.py`).

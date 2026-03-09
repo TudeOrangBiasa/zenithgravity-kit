@@ -24,16 +24,23 @@ ON USER_PROMPT:
      ACTIVATE Workflow('.agent/workflows/plan.md')
      APPLY Skill('orchestrator' -> "Deep Planning Mandate")
      FORBID "lazy bullet points"
-     FORCE "Edge Case Analysis"
 
-  // 2. State Anchoring
+  // 2. State Anchoring & Architecture Detection
   IF prompt touches "Frontend" OR "UI":
-     APPLY Skill('frontend-design' -> "Anti-Slop Constraints")
+     APPLY Skill('ux-humanist-designer' -> "Mathematical Constraints & Anti-Slop")
      READ Memory('.agent/memory/design-system.md')
-     APPLY Detected_Frameworks (e.g., Shadcn, Tailwind)
-     APPLY Base_Spacing (e.g., 8px)
 
-  // 3. Execution
+  IF prompt touches "Backend" OR "API" OR "Database":
+     APPLY Skill('system-architect' -> "Clean Architecture / DDD")
+     APPLY Skill('api-architect' -> "RESTfulness & Idempotency")
+     APPLY Skill('database-architect' -> "Normalization & No N+1")
+     READ Memory('.agent/memory/system-architecture.md')
+
+  // 3. Security & Ops Check
+  APPLY Skill('sec-ops' -> "Zero Trust & OWASP Hardening")
+  APPLY Skill('devops-architect' -> "CI/CD & Immutable Containers")
+
+  // 4. Execution
   GENERATE Code
 ```
 

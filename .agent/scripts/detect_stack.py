@@ -42,6 +42,10 @@ def detect_stack(project_root: str):
                 if "vue" in deps: frameworks.append("Vue")
                 if "express" in deps: frameworks.append("Express")
                 if "svelte" in deps: frameworks.append("Svelte")
+                if "@nestjs/core" in deps: frameworks.append("NestJS")
+                if "@adonisjs/core" in deps: frameworks.append("AdonisJS")
+                if "nuxt" in deps: frameworks.append("Nuxt")
+                if "astro" in deps: frameworks.append("Astro")
         except:
             pass
             
@@ -110,6 +114,20 @@ def generate_report(project_root: str):
         f"Frameworks        : {', '.join(frameworks) if frameworks else 'None detected'}",
         f"Environment       : {env.value}"
     ]
+
+    has_frontend = any(fw in frameworks for fw in ['Next.js', 'React', 'Vue', 'Svelte', 'Nuxt', 'Astro'])
+    if has_frontend or stack == StackType.NODE:
+        report.append("UI Guidelines     : Active -> `ux-humanist-designer` (Enforce mathematical layouts & anti-slop rules).")
+        
+    has_backend = any(fw in frameworks for fw in ['Django', 'Express', 'NestJS', 'Laravel', 'Symfony', 'Spring Boot', 'AdonisJS']) or stack in [StackType.GO, StackType.PYTHON, StackType.PHP, StackType.RUST, StackType.JAVA]
+    if has_backend or (stack == StackType.NODE and not has_frontend):
+        report.append("Architecture Guide: Active -> `system-architect` (Enforce Clean Architecture, DDD, Modular boundaries).")
+        report.append("API & Integration : Active -> `api-architect` (Enforce REST/GraphQL standards & Payload structure).")
+        report.append("Database & Schema : Active -> `database-architect` (Enforce Indexing, Normalization, N+1 Prevention).")
+        
+    # Security and DevOps are always enabled regardless of stack
+    report.append("Security & Review : Active -> `sec-ops` (Enforce OWASP principles & Code Review severity rating).")
+    report.append("DevOps & CI/CD    : Active -> `devops-architect` (Enforce Container Immutability & Deployment pipelines).")
     
     prefix = get_command_prefix(env)
     if prefix:

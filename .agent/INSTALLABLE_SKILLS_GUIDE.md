@@ -1,6 +1,6 @@
 # Framework Agnostic Extension Guide
 
-This native kit is designed to be **100% framework agnostic** out of the box. The core skills (`behavioral-modes`, `model-consistency`, `orchestrator`, `quality-assurance`, `frontend-design`, `intelligent-routing`) apply equally well whether you are coding in Python, Go, PHP, or JavaScript.
+This native kit is designed to be **100% framework agnostic** out of the box. The core skills (`behavioral-modes`, `orchestrator`, `quality-assurance`, `ux-humanist-designer`, `system-architect`, `database-architect`, `api-architect`, `sec-ops`, `devops-architect`) apply equally well whether you are coding in Python, Go, PHP, or JavaScript.
 
 ## The "Installable Skills" Concept
 

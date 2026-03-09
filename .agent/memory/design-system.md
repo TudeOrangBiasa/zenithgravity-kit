@@ -1,16 +1,14 @@
 # Design System Memory (State Anchor)
 
-> **Purpose:** This file acts as the single source of truth for UI generation. AI agents MUST read this file before designing components to ensure visual consistency across sessions and prevent hallucinating generic styles.
+> **Purpose:** Single source of truth for UI generation. AI agents MUST read this file before designing components.
 
 ## Framework Context & Literacy
 - **Detected UI Stack**: Vanilla / Undetermined
-> **Constraint**: No local UI components (`@/components/ui/`) detected. Be cautious and design clean semantic HTML or generate the components if explicitly asked.
+> **Constraint**: No local UI components detected (`@/components/ui/`).
 
-## External Constraints & Tokens
-- **Base Spacing Unit**: `8px` (`p-2`, `m-4`, etc.)
+## Design & Aesthetic Constraints (ux-humanist-designer)
+- **Base Spacing Unit**: `8px` grid (`p-2`, `m-4`, etc.). All padding/margins must be multiples of 8.
 - **Base Border Radius**: `md` (approx `6px`) for cards and buttons.
 - **Elevation Strategy**: Subtle Layering (Borders + Background shifts). **NO HEAVY DROP SHADOWS**.
-
-## Signature Patterns
-*(Add specific component variations here once established with the user, e.g., "All primary CTA buttons must have a subtle gradient border")*
-- TBD
+- **Mathematical Patterns**: Enforce Golden Ratio proportions and Modular Typographic Scales.
+- **Anti-Slop Ban**: NEVER use generic purple/indigo gradients or Inter/Arial fonts.

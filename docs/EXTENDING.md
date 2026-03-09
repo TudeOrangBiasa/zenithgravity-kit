@@ -1,6 +1,6 @@
 # Extending Zenithgravity-kit
 
-Out of the box, `zenithgravity-kit` ships with a set of battle-tested rules (`clean-code`, `frontend-design`, `orchestrator`). However, to tailor the AI to your specific backend (e.g., Spring Boot, Go DDD), internal company APIs, or custom workflows, you can extend the `.agent/` directory.
+Out of the box, `zenithgravity-kit` ships with a set of battle-tested rules (`clean-code`, `ux-humanist-designer`, `orchestrator`). However, to tailor the AI to your specific backend (e.g., Spring Boot, Go DDD), internal company APIs, or custom workflows, you can extend the `.agent/` directory.
 
 Here is a comprehensive guide to extending each component of the architecture.
 
