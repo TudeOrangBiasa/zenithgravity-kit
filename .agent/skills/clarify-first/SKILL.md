@@ -2,24 +2,19 @@
 name: clarify-first
 description: Use when ambiguity can materially change implementation outcome, safety, or architecture.
 metadata:
-	version: 1.0.0
+	version: 1.1.0
 	priority: medium
 ---
 
-# Clarify First Skill
+# CLARIFY FIRST
 
-## Objective
-Prevent wrong implementation caused by hidden assumptions.
+## TRIGGER
+- Ambiguous acceptance criteria.
+- Interpretations with divergent outcomes.
+- High-risk operations with unclear intent.
 
-## Trigger Conditions
-- Ambiguous acceptance criteria
-- Multiple valid interpretations with different outcomes
-- Risky operations with unclear intent
-
-## Question Policy
-- Ask at most 1-3 precise questions.
-- Provide a sensible default option for fast confirmation.
-- Skip questions when best action is obvious and low-risk.
-
-## Non-Goals
-- Do not block progress with unnecessary questions.
+## POLICY
+- Ask 1-3 precise questions.
+- Provide sensible default for fast confirmation.
+- Skip if action is obvious/low-risk.
+- **DONT** block progress with noise.

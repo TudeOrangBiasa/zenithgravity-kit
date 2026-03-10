@@ -1,0 +1,28 @@
+# NPM Ignore Configuration
+# .npmignore
+
+# Temporary & Log Files
+.agent/logs/
+.temp/
+temp/
+*.log
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# OS Related
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.github/
+.gitignore
+
+# Project / IDE
+.vscode/
+.idea/
+*.swp
+*.bak

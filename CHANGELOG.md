@@ -5,6 +5,20 @@ All notable changes to the **Zenithgravity-kit** project will be documented in t
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2026-03-10
+
+### Added
+
+- **Cross-Platform Verification**: Ported `.agent/scripts/verify_changes.sh` to `.agent/scripts/verify_changes.py` to ensure consistent framework gates across Linux, macOS, and Windows.
+- **Terminal Compatibility**: Removed emojis from `bin/cli.js` and all internal scripts to ensure clean output on all terminal environments.
+- **Repository Hygiene**: Added `.npmignore` and refined `package.json` `files` to exclude temporary logs (`.agent/logs/`) and local configuration files from distribution.
+
+### Changed
+
+- **High-Density Skill Refactor**: Systematically refactored all 18 internal `SKILL.md` files into a token-efficient, rule-based format, reducing prompt overhead by ~60% while maintaining 100% technical logic.
+- **Framework De-bloating**: Refactored `GEMINI.md`, agent profiles (`orchestrator`, `project-planner`), and memory anchors to remove decorative ASCII, redundant prose, and tutorial-like content.
+- **Memory Optimization**: Converted `.agent/memory/` files into pure state anchors, eliminating logic redundancy with the skills layer.
+
 ## [1.0.4] - 2026-03-09
 
 ### Added

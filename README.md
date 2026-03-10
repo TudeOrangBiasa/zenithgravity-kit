@@ -52,7 +52,7 @@ This guarantees that **every single output** is rigorously aligned with your exa
 
 ### Option A: Direct Usage (No Install)
 
-> **⚠️ Required Dependency**: Zenithgravity 1.0.4+ relies on [`rtk` (Rust Token Killer)](https://github.com/rtk-ai/rtk) to perform Context Compression. Please install it first (`brew install rtk` or `cargo install --git https://github.com/rtk-ai/rtk`) before attempting agentic loops.
+> **⚠️ Required Dependency**: Zenithgravity 1.0.5+ relies on [`rtk` (Rust Token Killer)](https://github.com/rtk-ai/rtk) to perform Context Compression. Additionally, it uses Python 3 for cross-platform verification gates. Please ensure `python3` is available in your PATH.
 
 You can inject this architecture into any new or existing project with a single command:
 

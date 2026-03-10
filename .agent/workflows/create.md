@@ -22,3 +22,4 @@ Deliver requested changes quickly for clear, low-risk tasks.
 
 - Skip heavyweight planning for trivial tasks.
 - Keep behavior changes explicit.
+- **Structured Handoff**: Even for small tasks, provide a concise summary of modified files and verification results.

@@ -104,12 +104,12 @@ def get_command_prefix(env_type: EnvType) -> str:
     return ""
 
 def generate_report(project_root: str):
+    root = Path(project_root)
     stack, frameworks = detect_stack(project_root)
     env = detect_environment(project_root)
     
     report = [
-        "🤖 AGENT STACK KNOWLEDGE REPORT",
-        "===============================",
+        "STACK REPORT",
         f"Language/Platform : {stack.value}",
         f"Frameworks        : {', '.join(frameworks) if frameworks else 'None detected'}",
         f"Environment       : {env.value}"

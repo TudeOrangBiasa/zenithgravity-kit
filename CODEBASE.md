@@ -10,7 +10,8 @@ This document serves as the single source of truth for the AI to navigate this p
   - **`skills/`**: Modular capabilities loaded dynamically via YAML frontmatter in `SKILL.md` files.
   - **`memory/`**: Custom state anchors for injecting persistent context (e.g., design systems, API endpoints).
   - **`workflows/`**: Step-by-step sequential recipes for specific tasks (e.g., `/create`, `/plan`). Auto-triggered via Intent Mapping.
-  - **`scripts/`**: Automation tools including `detect_stack.py` (for Environment Auto-Discovery) and `verify_agent.py`.
+  - **`scripts/`**: Cross-platform automation tools (Python) including `detect_stack.py` and `verify_changes.py`.
+  - **`logs/`**: (Ignored) Temporary execution logs for verification gates.
 
 ## Key Dependencies & Interactions
 

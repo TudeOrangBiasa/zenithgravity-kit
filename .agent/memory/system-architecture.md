@@ -1,15 +1,12 @@
-# System Architecture Memory (State Anchor)
+# SYSTEM ARCHITECTURE MEMORY
 
-> **Purpose:** Defines the structural boundaries of the repository. AI MUST strictly respect these boundaries when generating logic or files.
+## TOPOLOGY
+- **Pattern**: Standard / Flat.
 
-## Topological Context
-- **Detected Architecture Patterns**: Standard/Flat (No explicit macro-architecture found).
+## CONSTRAINTS
+- **Modular**: Feature-cohesive logic only.
+- **SoC**: Controllers = HTTP only; Logic = Use Cases/Services.
+- **Atomic**: No up-stream imports (Atoms !=> Molecules).
 
-## Architectural Constraints (`system-architect`)
-- **Modularity Over Monoliths**: If Feature-Sliced or Modular patterns are detected, keep code cohesive to its domain.
-- **Separation of Concerns**: Controllers MUST NOT have business logic. Extract to Use Cases / Services.
-- **Atomic Strictness**: If Atomic Design is detected on UI, Atoms cannot contain or import Molecules/Organisms.
-
-## Signature Paths
-*(Add critical system paths here, e.g., 'API Routes are in apps/api/src/routes')*
+## SIGNATURE PATHS
 - TBD

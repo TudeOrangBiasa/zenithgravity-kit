@@ -4,7 +4,7 @@ import sys
 def verify_kit(root_dir):
     agent_dir = os.path.join(root_dir, '.agent')
     if not os.path.isdir(agent_dir):
-        print("❌ Error: .agent directory not found.")
+        print("Error: .agent directory not found.")
         sys.exit(1)
 
     errors = []
@@ -30,12 +30,12 @@ def verify_kit(root_dir):
                     errors.append(f"Skill '{item}' is missing SKILL.md")
 
     if errors:
-        print("❌ Agent Verification Failed:")
+        print("Agent Verification Failed:")
         for err in errors:
             print(f"  - {err}")
         sys.exit(1)
     
-    print("✅ Agent Verification Passed. System is healthy.")
+    print("Agent Verification Passed. System is healthy.")
 
 if __name__ == "__main__":
     workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

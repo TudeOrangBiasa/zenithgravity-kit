@@ -241,9 +241,8 @@ def generate_memory_files(base_path):
     with open(memory_dir / "system-architecture.md", "w") as f:
         f.write("\n".join(sys_content))
         
-    print(f"✅ Successfully synced Design System Memory to {memory_dir / 'design-system.md'}")
-    print(f"✅ Successfully synced System Architecture Memory to {memory_dir / 'system-architecture.md'}")
-    print(f"Architecture Patterns detected: {', '.join(arch_patterns) if arch_patterns else 'None'}")
+    print(f"Memory sync complete: design-system.md | system-architecture.md")
+    print(f"Patterns: {', '.join(arch_patterns) if arch_patterns else 'None'}")
 
 if __name__ == "__main__":
     pwd = Path.cwd()

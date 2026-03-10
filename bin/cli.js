@@ -15,11 +15,11 @@ const command = args[0];
 
 function printHelp() {
   console.log(`
-🚀 Zenithgravity-kit CLI v${version}
+Zenithgravity-kit CLI v${version}
 
 Usage:
-  npx zenithgravity <command>
-  zenithgravity <command> (if installed globally)
+  npx zenithgravity <command> [options]
+  zenithgravity <command> [options] (if installed globally)
 
 Commands:
   init      Initialize the .agent directory in your current project.
@@ -28,10 +28,20 @@ Commands:
             the AI's design memory based on local package.json dependencies.
   readme    Display the contents of the Zenithgravity-kit README.
   help      Show this help message.
+
+Options:
+  -v, --version  Show the version number.
+  -h, --help     Show this help message.
 `);
 }
 
-if (!command || command === 'help') {
+// Support for version and help flags
+if (args.includes('--version') || args.includes('-v')) {
+  console.log(`v${version}`);
+  process.exit(0);
+}
+
+if (args.includes('--help') || args.includes('-h') || !command || command === 'help') {
   printHelp();
   process.exit(0);
 }
@@ -41,7 +51,7 @@ if (command === 'init') {
   const targetAgentDir = path.join(process.cwd(), '.agent');
 
   if (fs.existsSync(targetAgentDir)) {
-    console.error('❌ Error: .agent directory already exists in the current project.');
+    console.error('Error: .agent directory already exists in the current project.');
     console.error('If you want to re-initialize, please remove the existing .agent directory first.');
     process.exit(1);
   }
@@ -52,15 +62,15 @@ if (command === 'init') {
         fs.cpSync(sourceAgentDir, targetAgentDir, { recursive: true });
     } else {
         // Fallback for older nodes if necessary, but CP sync is standard now
-        console.error('❌ Error: Node.js v16.7.0 or higher is required for fs.cpSync.');
+        console.error('Error: Node.js v16.7.0 or higher is required for fs.cpSync.');
         process.exit(1);
     }
     
-    console.log('✅ Zenithgravity-kit v${version} successfully initialized!');
-    console.log('📁 The .agent directory has been copied to your project.');
+    console.log(`Zenithgravity-kit v${version} successfully initialized!`);
+    console.log('The .agent directory has been copied to your project.');
     console.log('You can now use Zenithgravity Agentic workflows in this workspace.');
   } catch (err) {
-    console.error('❌ Error copying .agent directory:', err);
+    console.error('Error copying .agent directory:', err);
     process.exit(1);
   }
 } else if (command === 'sync') {
@@ -68,7 +78,7 @@ if (command === 'init') {
   const syncScript = path.join(scriptsDir, 'sync_memory.py');
   
   if (fs.existsSync(syncScript)) {
-    console.log('🔄 Running Zenithgravity Memory Sync...');
+    console.log('Running Zenithgravity Memory Sync...');
     try {
         // Try to execute the python script
         execSync(`python3 ${syncScript}`, { stdio: 'inherit' });
@@ -77,12 +87,12 @@ if (command === 'init') {
         try {
             execSync(`python ${syncScript}`, { stdio: 'inherit' });
         } catch (fallbackErr) {
-            console.error('❌ Error executing sync_memory.py. Make sure Python is installed.');
+            console.error('Error executing sync_memory.py. Make sure Python is installed.');
             process.exit(1);
         }
     }
   } else {
-    console.error('❌ Error: .agent/scripts/sync_memory.py not found.');
+    console.error('Error: .agent/scripts/sync_memory.py not found.');
     console.error('Did you run "npx zenithgravity init" in this project first?');
     process.exit(1);
   }
@@ -94,11 +104,11 @@ if (command === 'init') {
     console.log(readmeContent);
     console.log('\n--- End of README ---\n');
   } else {
-    console.error('❌ Error: README.md not found.');
+    console.error('Error: README.md not found.');
     process.exit(1);
   }
 } else {
-  console.error(`❌ Unknown command: ${command}`);
+  console.error(`Unknown command: ${command}`);
   printHelp();
   process.exit(1);
 }

@@ -15,4 +15,7 @@ This file contains project-specific logic, architectural decisions, and business
 - **ADR 005: Terminal Interaction Protocol**: To address the LLM's "Blind Execution Flaw" (assuming a command worked without checking), the `model-consistency` skill enforces mandatory verification of STDOUT/STDERR and the use of non-interactive flags (e.g., `-y`).
 - **ADR 006: State Anchors via memory/**: The `.agent/memory/` structure is used to inject persistent context (such as design system preferences or established API contracts) explicitly before execution, preventing context loss and style drift across continuous sessions.
 
+- **ADR 007: Cross-Platform Utility Porting**: Critical framework scripts (like `verify_changes`) must be written in Python to ensure compatibility across Linux, macOS, and Windows.
+- **ADR 008: High-Density Instruction Formatting**: All agentic instructions (Skills, Rules, Profiles) must prioritize density over readability for humans to maximize context window utility for code.
+
 _(Add more project-specific knowledge here as the project evolves)_

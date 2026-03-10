@@ -2,24 +2,20 @@
 name: verification-gate
 description: Use for enforcing evidence-based completion through targeted checks, regression awareness, and concise reporting.
 metadata:
-	version: 1.0.0
+	version: 1.1.0
 	priority: high
 ---
 
-# Verification Gate Skill
+# VERIFICATION GATE
 
-## Objective
-Ensure implementation claims are backed by concrete checks.
+## STRATEGY
+1. Narrowest check first -> 2. Broad checks as needed.
+- Isolate new failures from pre-existing issues.
 
-## Verification Strategy
-1. Run the narrowest relevant check first.
-2. Expand to broader checks only if needed.
-3. Separate related failures from unrelated pre-existing issues.
+## REPORT
+- Executed checks.
+- Outcome summary.
+- Residual risks/unverified areas.
 
-## Report Format
-- Checks executed
-- Outcome summary
-- Remaining risks or unverified areas
-
-## Non-Goals
-- Do not fix unrelated failing tests unless requested.
+## DONT
+- Fix unrelated tests unless requested.

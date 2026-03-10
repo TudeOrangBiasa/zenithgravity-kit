@@ -26,7 +26,7 @@ A low-effort, high-reliability native kit for Antigravity IDE with stable routin
 
 - **Auto-Discovery**: `scripts/detect_stack.py` runs before planning/creation to identify Native vs Docker/DDEV environments.
 - **Auto-Routing**: Natural language requests map directly to `workflows/` via `.agent/skills/intelligent-routing/`.
-- **Terminal Interaction Protocol**: Enforced zero blind-execution rules (always verify output, use `-y` flags).
+- **Terminal Interaction Protocol**: Enforced zero blind-execution rules via `verify_changes.py`.
 
 ## Complexity Gate
 
@@ -42,7 +42,7 @@ A low-effort, high-reliability native kit for Antigravity IDE with stable routin
 
 ## Design Constraints
 
-- Keep always-on text compact.
+- Keep instructions high-density (Rules > Prose).
 - Prefer progressive disclosure via skills.
 - Prioritize verifiable outcomes over speculative reasoning.
 

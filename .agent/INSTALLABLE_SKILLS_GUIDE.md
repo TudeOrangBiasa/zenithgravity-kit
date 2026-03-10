@@ -19,10 +19,10 @@ When you drop this `.agent` folder into a new project, you can "install" specifi
 name: nextjs-expert
 description: Use when writing or modifying Next.js code, React components, or API routes.
 ---
-# Next.js Expert Guidelines
-- **Always use App Router**, never Pages Router.
-- **Server Components by Default**: Only add `"use client"` when state or effects are strictly needed.
-- **Data Fetching**: Use native fetch API instead of `axios`.
+# NEXTJS EXPERT
+- **Structure**: Mandatory App Router (`app/`).
+- **Components**: Server components by default; `"use client"` only for state/effects.
+- **Data**: Native `fetch` only (No Axios).
 ```
 
 ### Example: Installing a `laravel-patterns` Skill
@@ -32,10 +32,10 @@ description: Use when writing or modifying Next.js code, React components, or AP
 name: laravel-patterns
 description: Use when writing PHP, Laravel controllers, models, or Eloquent queries.
 ---
-# Laravel Patterns
-- **Fat Models, Skinny Controllers**: Push business logic constraints to the model or dedicated service classes.
-- **Validation**: Always use Form Requests instead of inline validation in controllers.
-- **CLI-First**: Never create migrations manually, always use `artisan make:migration`.
+# LARAVEL PATTERNS
+- **Logic**: Fat Models / Skinny Controllers.
+- **Validation**: Strict Form Requests.
+- **CLI**: Mandatory `artisan` for migrations.
 ```
 
 ## Why This Architecture Wins

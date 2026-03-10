@@ -3,3 +3,4 @@ node_modules/
 temp/
 .env
 .DS_Store
+.agent/logs/
