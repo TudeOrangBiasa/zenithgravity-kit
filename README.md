@@ -57,7 +57,7 @@ This guarantees that **every single output** is rigorously aligned with your exa
 You can inject this architecture into any new or existing project with a single command:
 
 ```bash
-npx zenithgravity-kit init
+npx zenithgravity-kit@latest init
 ```
 
 ### Option B: Global Installation
@@ -65,12 +65,12 @@ npx zenithgravity-kit init
 For a faster experience, install the kit globally:
 
 ```bash
-npm install -g zenithgravity-kit
+npm install -g zenithgravity-kit@latest 
 ```
 
 Once installed, you can use the commands directly:
 
 ```bash
-zenithgravity init
+zenithgravity@latest init
 zenithgravity readme
 ```
