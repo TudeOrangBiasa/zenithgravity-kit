@@ -71,6 +71,6 @@ npm install -g zenithgravity-kit@latest
 Once installed, you can use the commands directly:
 
 ```bash
-zenithgravity@latest init
+zenithgravity init
 zenithgravity readme
 ```
