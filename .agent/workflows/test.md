@@ -14,7 +14,8 @@ Produce reliable pass/fail evidence with minimal waste.
 
 1. Run most relevant checks first.
 2. **Pre-flight Sandbox**: Run `python3 .agent/scripts/sandbox_verify.py` before declaring completion.
-3. Expand checks only when needed.
+3. **UI/UX Audit**: If testing frontend/UI, MANDATORY run `@audit` to verify accessibility and visual consistency.
+4. Expand checks only when needed.
 4. Distinguish related vs unrelated failures.
 5. Report outcomes and unverified areas.
 

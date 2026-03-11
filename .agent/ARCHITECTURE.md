@@ -1,65 +1,52 @@
 # Native .agent Architecture
 
 ## Purpose
-
-A low-effort, high-reliability native kit for Antigravity IDE with stable routing and reduced model drift.
+A low-effort native kit for Antigravity IDE with stable routing and reduced model drift.
 
 ## Structure
-
 - `rules/` -> always-on governance (`GEMINI.md` only)
-- `agents/` -> execution coordinators for simple vs complex task modes
-- `skills/` -> modular capabilities. Divided conceptually into:
-  - **Core Skills**: Framework-agnostic (e.g., `orchestrator`, `ux-humanist-designer`, `system-architect`, `database-architect`, `api-architect`, `sec-ops`, `devops-architect`, `systematic-debugging`, `automation-engineer`). These ship with the base kit.
-  - **Installable Skills**: Framework/stack-specific (e.g., `laravel-expert`, `react-patterns`). Added per-project.
-- `memory/` -> custom state anchors (persistent context injection)
-- `workflows/` -> deterministic step-by-step operational recipes
-- `scripts/` -> optional automation helpers
+- `agents/` -> execution coordinators
+- `skills/` -> modular capabilities
+  - **Core**: Framework-agnostic (`orchestrator`, `frontend-design`, `system-architect`, `database-architect`, `api-architect`, `sec-ops`, `devops-architect`, `systematic-debugging`, `automation-engineer`, `humanizer`). Included in base kit.
+  - **Extensions**: Framework-specific (`laravel-expert`, `nextjs-expert`). Installed via manual creation or [Smithery CLI](https://smithery.ai).
+- `memory/` -> persistent context anchors 
+- `workflows/` -> step-by-step sequential recipes
+- `scripts/` -> python verification helpers
 
 ## Load Strategy
-
-1. `rules/GEMINI.md` (Core governance & Intent Mapping)
+1. `rules/GEMINI.md` (Intent Mapping)
 2. Agent selection (`orchestrator` / `project-planner`)
-3. Skill activation by semantic relevance, Intent Mapping, or `@skill-name`
-4. Workflow execution (Auto-triggered by conversational intent without slash commands)
+3. Skill activation (Auto-routed by intent)
+4. Workflow execution
 
 ## Built-In Capabilities
-
-- **Auto-Discovery**: `scripts/detect_stack.py` runs before planning/creation to identify Native vs Docker/DDEV environments.
-- **Auto-Routing**: Natural language requests map directly to `workflows/` via `.agent/skills/intelligent-routing/`.
-- **Terminal Interaction Protocol**: Enforced zero blind-execution rules via `verify_changes.py`.
+- **Auto-Discovery**: `scripts/detect_stack.py` identifies environments (Native, Docker, testing frameworks) prior to planning.
+- **Auto-Routing**: Natural language commands automatically map to `workflows/` via `.agent/skills/intelligent-routing/`.
+- **Zero-Blind Execution**: `verify_changes.py` gates unverified commits.
 
 ## Complexity Gate
-
 - Trivial/local task: direct `/create`
-- Multi-file or ambiguous task: `/plan` -> `/orchestrate`
-- Defect task: `/debug`
-- Validation handoff: `/test`
+- Multi-file task: `/plan` -> `/orchestrate`
+- Defect: `/debug`
+- Validation: `/test`
 
 ## Language Contract
-
-- Internal docs in `.agent/**`: English only
+- Internal docs (`.agent/**`): English only
 - User interaction: follow user language
 
 ## Design Constraints
-
-- Keep instructions high-density (Rules > Prose).
-- Prefer progressive disclosure via skills.
-- Prioritize verifiable outcomes over speculative reasoning.
+- Prioritize high-density instructions (Rules > Prose).
+- Use progressive disclosure via skills.
+- Require verifiable CLI outcomes.
 
 ## Extension Patterns
 
-### Detailed Guide
-
-For a comprehensive guide on extending agents, rules, memory, scripts, skills, and workflows, please refer to the dedicated documentation at `docs/EXTENDING.md`.
+Check `docs/EXTENDING.md` for a comprehensive guide on adding custom memory, scripts, and workflows.
 
 ### Adding a New Skill
-
-1. Create a new folder: `.agent/skills/<skill-name>/`
-2. Create `.agent/skills/<skill-name>/SKILL.md` using the minimum template.
-3. Define the `description` carefully, as this is how the AI auto-discovers the skill.
+1. Create `.agent/skills/<skill-name>/SKILL.md`.
+2. Explicitly define trigger conditions in the `description` block for auto-routing.
 
 ### Adding a New Agent
-
 1. Create `.agent/agents/<agent-name>.md`.
-2. Define the `tools` and `skills` the agent needs in the YAML frontmatter.
-3. Register the new agent in `.agent/rules/GEMINI.md` for proper routing.
+2. Register the agent in `.agent/rules/GEMINI.md` for proper routing.

@@ -1,40 +1,116 @@
+"""
+ki_lookup.py — Knowledge Item Lookup
+Search KI directory for topics matching one or more keywords.
+
+Usage:
+  python3 .agent/scripts/ki_lookup.py <keyword> [keyword2 ...]
+  python3 .agent/scripts/ki_lookup.py vue component
+"""
+
 import os
 import sys
+import json
+from pathlib import Path
 
-def lookup_ki(topic):
-    ki_dir = "/home/todayz/.gemini/antigravity/knowledge"
-    if not os.path.exists(ki_dir):
-        print(f"⚠️ KI directory not found at {ki_dir}")
+
+# ─────────────────────────────────────────────
+# KI directory: portable, uses HOME env var
+# ─────────────────────────────────────────────
+
+def get_ki_dir() -> Path:
+    """Resolve KI directory dynamically from HOME, not hardcoded."""
+    home = Path.home()
+    # Try known locations in order
+    candidates = [
+        home / ".gemini" / "antigravity" / "knowledge",
+        home / ".config" / "antigravity" / "knowledge",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    # Return first candidate as default (will show not-found message)
+    return candidates[0]
+
+
+# ─────────────────────────────────────────────
+# Lookup
+# ─────────────────────────────────────────────
+
+def score_match(content: str, keywords: list[str]) -> int:
+    """Count how many keywords appear in content (case-insensitive)."""
+    lower = content.lower()
+    return sum(1 for kw in keywords if kw.lower() in lower)
+
+
+def lookup_ki(keywords: list[str]):
+    ki_dir = get_ki_dir()
+
+    if not ki_dir.exists():
+        print(f"⚠️  KI directory not found at: {ki_dir}")
+        print("    Run the knowledge sync pipeline to populate it.")
         return
 
-    print(f"🔍 Searching Knowledge Items for: '{topic}'")
-    matches = []
-    
-    # Simple keyword-based scan of KI names and summaries
-    for root, dirs, files in os.walk(ki_dir):
-        for file in files:
-            if file == "metadata.json":
-                path = os.path.join(root, file)
-                try:
-                    with open(path, 'r') as f:
-                        content = f.read().lower()
-                        if topic.lower() in content:
-                            # Extract KI name from path
-                            ki_name = os.path.basename(root)
-                            matches.append(ki_name)
-                except:
-                    continue
+    query = " ".join(keywords)
+    print(f"🔍 Searching Knowledge Items for: '{query}'")
+    print(f"   KI Store: {ki_dir}\n")
 
-    if matches:
-        print(f"✅ Found {len(matches)} relevant Knowledge Items:")
-        for match in set(matches):
-            print(f" - {match}")
-    else:
-        print(f"ℹ️ No relevant Knowledge Items found for '{topic}'.")
+    matches: list[tuple[int, str, str, str]] = []  # (score, ki_name, summary, artifact_path)
+
+    for root, dirs, files in os.walk(ki_dir):
+        if "metadata.json" in files:
+            path = os.path.join(root, "metadata.json")
+            try:
+                with open(path, "r") as f:
+                    raw = f.read()
+                score = score_match(raw, keywords)
+                if score > 0:
+                    ki_name = os.path.basename(root)
+                    try:
+                        data = json.loads(raw)
+                        summary = data.get("summary", "No summary available.")
+                        # Find first artifact if any
+                        artifacts_dir = Path(root) / "artifacts"
+                        artifact_path = ""
+                        if artifacts_dir.exists():
+                            artifact_files = sorted(artifacts_dir.iterdir())
+                            if artifact_files:
+                                artifact_path = str(artifact_files[0])
+                    except (json.JSONDecodeError, Exception):
+                        summary = "(could not parse metadata)"
+                        artifact_path = ""
+
+                    matches.append((score, ki_name, summary, artifact_path))
+            except Exception:
+                continue
+
+    if not matches:
+        print(f"ℹ️  No relevant Knowledge Items found for '{query}'.")
+        return
+
+    # Sort by relevance score descending
+    matches.sort(key=lambda x: x[0], reverse=True)
+
+    print(f"✅ Found {len(matches)} relevant Knowledge Item(s) (sorted by relevance):\n")
+    for score, name, summary, artifact in matches:
+        relevance = "●" * min(score, 5)  # max 5 dots
+        print(f"  [{relevance}] \033[1m{name}\033[0m (score: {score})")
+        # Trim summary to 120 chars
+        short_summary = (summary[:120] + "...") if len(summary) > 120 else str(summary)
+        print(f"       {short_summary}")
+        if artifact:
+            print(f"       📄 Artifact: {artifact}")
+        print()
+
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python3 ki_lookup.py <keyword> [keyword2 ...]")
+        print("Example: python3 ki_lookup.py vue component")
+        sys.exit(0)
+
+    keywords: list[str] = list(sys.argv[1:])
+    lookup_ki(keywords)
+
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        topic = " ".join(sys.argv[1:])
-        lookup_ki(topic)
-    else:
-        print("Usage: python ki_lookup.py <topic_keyword>")
+    main()

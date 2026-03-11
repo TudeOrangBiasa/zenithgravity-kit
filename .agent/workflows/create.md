@@ -22,4 +22,5 @@ Deliver requested changes quickly for clear, low-risk tasks.
 
 - Skip heavyweight planning for trivial tasks.
 - Keep behavior changes explicit.
+- **UI Quality Gate**: If task involves UI components, ALWAYS run `@polish` natively to refine aesthetics and `@audit` for accessibility before handoff.
 - **Structured Handoff**: Even for small tasks, provide a concise summary of modified files and verification results.

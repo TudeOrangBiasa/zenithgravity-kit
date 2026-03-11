@@ -24,6 +24,7 @@ Produce a high-standard Technical Design Document (TDD). You must act as a Senio
    - **Checklist Requirement**: Each plan MUST include:
      - [ ] Check dependencies & Imports
      - [ ] Update state/memory anchors
+     - [ ] For UI/UX Tasks: Include `@frontend-design` layout phase and `@audit` / `@polish` quality gates
      - [ ] Run targeted validation script (`verify_changes.sh`)
 5. **Rollback Strategy**: Define how to undo changes if something goes wrong.
 6. **Verification Matrix**: Map each phase to a specific `rtk` or `verify_changes.sh` command.

@@ -1,41 +1,54 @@
-# Skills Installation Contract (Project-Local)
+# 🧠 Agent Skills Architecture
 
-This workspace uses project-local skills at `.agent/skills/<skill-name>/SKILL.md`.
+This directory houses the modular cognitive capabilities of the Zenithgravity-kit framework. Skills are localized context payloads that teach the AI how to write code according to specific architectural standards, design systems, or tech stacks.
 
-## Minimum Skill Template
+## 🌟 Core vs. Extension Skills
+
+- **Core Skills**: The foundational architecture that ships natively with Zenithgravity (e.g., `system-architect`, `database-architect`, `devops-architect`, `systematic-debugging`, `sec-ops`, `frontend-design`, `humanizer`). These enforce general software engineering discipline.
+- **Extension Skills**: Framework or project-specific skills (e.g., `nextjs-expert`, `laravel-patterns`) that you add to tailor the AI to your exact stack. 
+
+## 🔌 Installing 3rd-Party Skills via Smithery
+
+Zenithgravity is 100% compliant with the [Smithery](https://smithery.ai) specification. Instead of manually writing skills, you can pull community-curated expertise directly into your project:
+
+```bash
+npx @smithery/cli@latest skill add [namespace]/[skill-name] --agent antigravity
+```
+
+*Example: Installing the Humanizer skill to strip AI-slop from text:*
+```bash
+npx @smithery/cli@latest skill add davila7/humanizer --agent antigravity
+```
+
+## 🛠️ Authoring Custom Skills (Manual)
+
+If you need private, project-specific rules, you can create them manually:
+
+### Folder Pattern
+```text
+.agent/skills/
+  your-skill-name/
+    SKILL.md        # Required: The core instruction payload
+    scripts/        # Optional: Executable helpers (e.g. bash/python scripts)
+    references/     # Optional: Markdown examples or context files
+```
+
+### Required `SKILL.md` Template (YAML Frontmatter is Mandatory)
 ```yaml
 ---
-name: my-skill
-description: Use when ...
-metadata:
-  version: 1.0.0
-  priority: medium
+name: your-skill-name
+description: Explicitly state when the AI should use this skill (e.g. "Use when writing React components"). This string is used by the Auto-Router.
+version: 1.0.0
 ---
+# YOUR SKILL RULES
+- **Constraint 1**: ...
+- **Constraint 2**: ...
 ```
 
-## Required Fields
-- `name`: unique skill identifier
-- `description`: actionable trigger phrase for auto-discovery
+## 🔀 Full-Spectrum Auto-Routing
 
-## Optional Fields
-- `metadata`: structured custom data (example: version, priority)
+You **do not** need to manually call skills using slash commands. 
 
-## Folder Pattern
-```
-.agent/skills/
-  <skill-name>/
-    SKILL.md
-    scripts/        # optional
-    references/     # optional
-    assets/         # optional
-```
+The framework utilizes **Full-Spectrum Auto-Routing** (via Intent Mapping in `GEMINI.md` and `intelligent-routing/SKILL.md`). The AI matches your natural language intent (e.g., "design the database", "fix the deployment", "make the UI look better") to the `description` of the skill and automatically activates the corresponding constraints (`@database-architect`, `@devops-architect`, `@frontend-design`).
 
-## Activation Rules
-- Automatic: semantic match from `description`
-- Manual override: `@skill-name`
-- Conflict resolution: core rules -> agent -> skill -> workflow
-
-## Authoring Guidelines
-- Keep instructions specific and testable.
-- Include non-goals to prevent scope drift.
-- Avoid model-specific assumptions unless strictly needed.
+If you wish to force a specific skill, you can use an explicit mention: `@your-skill-name`.

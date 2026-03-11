@@ -19,3 +19,4 @@ Fix the root cause, not symptoms.
 ## Rules
 - No broad refactors during bug fix unless necessary.
 - Do not claim fix without reproduction and re-check.
+- **UI/UX Bugs**: For cosmetic, layout, or wording bugs, do not guess raw CSS. Delegate to `@normalize`, `@polish`, or `@clarify`.

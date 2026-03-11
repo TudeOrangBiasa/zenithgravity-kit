@@ -1,12 +1,10 @@
 # Extending Zenithgravity-kit
 
-Out of the box, `zenithgravity-kit` ships with a set of battle-tested rules (`clean-code`, `ux-humanist-designer`, `orchestrator`). However, to tailor the AI to your specific backend (e.g., Spring Boot, Go DDD), internal company APIs, or custom workflows, you can extend the `.agent/` directory.
-
-Here is a comprehensive guide to extending each component of the architecture.
+`zenithgravity-kit` ships with a set of battle-tested rules (`clean-code`, `frontend-design`, `orchestrator`). To tailor the AI to your specific backend (e.g., Spring Boot, Go DDD), internal company APIs, or custom workflows, you can extend the `.agent/` directory.
 
 ## 1. Modular Capabilities (`.agent/skills/`)
 
-Skills represent specific knowledge domains, formatting rules, or behavioral adjustments. The Antigravity IDE dynamically discovers skills by recursively scanning the `.agent/skills/` directory for files named `SKILL.md`.
+Skills represent specific knowledge domains, formatting rules, or behavioral adjustments. The IDE dynamically discovers skills by recursively scanning the `.agent/skills/` directory for files named `SKILL.md`.
 
 To install a skill from GitHub, the Smithery API, or the community:
 
@@ -65,12 +63,12 @@ To map new natural language intents to workflows or skills, modify `.agent/rules
 
 ## 4. State Anchors & Context Injection (`.agent/memory/`)
 
-The `memory/` directory is a custom feature folder used to store persistent context that the AI should consult before making decisions. It acts as an anchor against "AI drifting" over long conversations.
+The `memory/` directory stores persistent context that the AI should consult before making decisions. It acts as an anchor against "AI drifting" over long conversations.
 
 To use memory:
 
 1. Create a context file, e.g., `.agent/memory/api-endpoints.md`.
-2. Reference this memory file from your `skills/` or `agents/` instructions. For example, in a frontend skill: "You MUST read `.agent/memory/api-endpoints.md` before writing data fetching logic."
+2. Reference this memory file from your `skills/` or `agents/` instructions. For example: "You MUST read `.agent/memory/api-endpoints.md` before writing data fetching logic."
 
 ## 5. Custom Workflows (`.agent/workflows/`)
 
@@ -96,4 +94,4 @@ description: Deploy the project to the staging server.
 
 ## 6. Automation Helpers (`.agent/scripts/`)
 
-Place any programmatic utilities (Python, Node.js, Bash scripts) here. These scripts are typically invoked by workflows or agents to gather localized context, verify states, or automate terminal tasks (e.g., `scripts/detect_stack.py` to identify frameworks).
+Place programmable utilities (Python, Node.js, Bash scripts) here. These scripts are typically invoked by workflows or agents to gather localized context, verify states, or automate terminal tasks (e.g., `scripts/detect_stack.py` to identify frameworks).

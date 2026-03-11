@@ -1,18 +1,28 @@
 # Framework Agnostic Extension Guide
 
-This native kit is designed to be **100% framework agnostic** out of the box. The core skills (`behavioral-modes`, `orchestrator`, `quality-assurance`, `ux-humanist-designer`, `system-architect`, `database-architect`, `api-architect`, `sec-ops`, `devops-architect`, `systematic-debugging`, `automation-engineer`) apply equally well whether you are coding in Python, Go, PHP, or JavaScript.
+This native kit is framework agnostic. The core skills (`behavioral-modes`, `orchestrator`, `quality-assurance`, `system-architect`, `database-architect`, `api-architect`, `sec-ops`, `devops-architect`, `systematic-debugging`, `automation-engineer`, `humanizer`) apply to Python, Go, PHP, or JavaScript.
 
 ## The "Installable Skills" Concept
 
 When you drop this `.agent` folder into a new project, you can "install" specific skills that teach the AI exactly how to write code for your specific stack.
 
-### How to Install a Project-Specific Skill
+### How to Install a Project-Specific Skill (Manual)
 
 1. Identify the main framework of your project (e.g., Next.js).
-2. Create a new folder: `.agent/skills/nextjs-expert/`.
-3. Create `SKILL.md` inside it. In this file, you put hard rules about how to write Next.js _according to your preferences_.
+2. Create a folder: `.agent/skills/nextjs-expert/`.
+3. Create `SKILL.md` inside it. Add hard rules about how to write Next.js according to your preferences.
 
-### Example: Installing a `nextjs-expert` Skill
+### How to Install a Skill via Smithery (Automated)
+
+Install remote community skills directly into this architecture using the [Smithery CLI](https://smithery.ai). The `.agent` directory follows standard Agentic formats, ensuring seamless installations.
+
+**Example: Installing the `humanizer` skill by @blader:**
+```bash
+npx @smithery/cli@latest skill add davila7/humanizer --agent antigravity
+```
+*This command automatically downloads and mounts the `humanizer` skill into your `.agent/skills/` directory.*
+
+### Example: Custom `nextjs-expert` Skill
 
 ```yaml
 ---

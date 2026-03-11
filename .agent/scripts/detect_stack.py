@@ -1,8 +1,36 @@
-import os
+"""
+detect_stack.py — Project Stack Detector
+Detects language(s), frameworks, environment, and recommends active agent skills.
+Supports multi-stack (e.g., monorepo with Node + Python).
+
+Usage:
+  python3 .agent/scripts/detect_stack.py [--root /path/to/project] [--json]
+"""
+
+import sys
+import io
 import json
-import json
+import argparse
 from enum import Enum
 from pathlib import Path
+from typing import Optional, cast
+
+
+# ─────────────────────────────────────────────
+# Shared utility
+# ─────────────────────────────────────────────
+
+def find_project_root(start: Optional[Path] = None) -> Path:
+    current = (start or Path.cwd()).resolve()
+    for candidate in [current, *current.parents]:
+        if (candidate / ".agent").is_dir():
+            return candidate
+    return current
+
+
+# ─────────────────────────────────────────────
+# Enums
+# ─────────────────────────────────────────────
 
 class StackType(Enum):
     NODE = "Node.js"
@@ -11,7 +39,10 @@ class StackType(Enum):
     GO = "Go"
     RUST = "Rust"
     JAVA = "Java"
+    RUBY = "Ruby"
+    ELIXIR = "Elixir"
     UNKNOWN = "Unknown"
+
 
 class EnvType(Enum):
     DDEV = "DDEV"
@@ -19,136 +50,227 @@ class EnvType(Enum):
     DOCKER = "Docker"
     NATIVE = "Native"
 
-def detect_stack(project_root: str):
-    root = Path(project_root)
-    stack = StackType.UNKNOWN
-    frameworks = []
-    
-    # Python detection
-    if (root / "requirements.txt").exists() or (root / "Pipfile").exists() or (root / "pyproject.toml").exists():
-        stack = StackType.PYTHON
-        if (root / "manage.py").exists():
-            frameworks.append("Django")
-            
-    # Node detection
-    elif (root / "package.json").exists():
-        stack = StackType.NODE
-        try:
-            with open(root / "package.json", "r") as f:
-                pkg = json.load(f)
-                deps = {**pkg.get("dependencies", {}), **pkg.get("devDependencies", {})}
-                if "next" in deps: frameworks.append("Next.js")
-                if "react" in deps: frameworks.append("React")
-                if "vue" in deps: frameworks.append("Vue")
-                if "express" in deps: frameworks.append("Express")
-                if "svelte" in deps: frameworks.append("Svelte")
-                if "@nestjs/core" in deps: frameworks.append("NestJS")
-                if "@adonisjs/core" in deps: frameworks.append("AdonisJS")
-                if "nuxt" in deps: frameworks.append("Nuxt")
-                if "astro" in deps: frameworks.append("Astro")
-        except:
-            pass
-            
-    # PHP detection
-    elif (root / "composer.json").exists():
-        stack = StackType.PHP
-        try:
-            with open(root / "composer.json", "r") as f:
-                comp = json.load(f)
-                reqs = {**comp.get("require", {}), **comp.get("require-dev", {})}
-                if "laravel/framework" in reqs: frameworks.append("Laravel")
-                if "symfony/symfony" in reqs: frameworks.append("Symfony")
-        except:
-            pass
-            
-    # Go detection
-    elif (root / "go.mod").exists():
-        stack = StackType.GO
-        
-    # Rust detection
-    elif (root / "Cargo.toml").exists():
-        stack = StackType.RUST
 
-    # Java detection
-    elif (root / "pom.xml").exists() or (root / "build.gradle").exists():
-        stack = StackType.JAVA
-        if (root / "pom.xml").exists():
-            try:
-                with open(root / "pom.xml", "r", encoding="utf-8") as f:
-                    content = f.read()
-                    if "spring-boot" in content: frameworks.append("Spring Boot")
-            except:
-                pass
-                
-    return stack, frameworks
+# ─────────────────────────────────────────────
+# Detection — multi-pass (not elif chain)
+# ─────────────────────────────────────────────
 
-def detect_environment(project_root: str):
-    root = Path(project_root)
-    
-    if (root / ".ddev").exists():
-        return EnvType.DDEV
-        
+def detect_stacks(root: Path) -> list[tuple[StackType, list[str]]]:
+    """Returns list of (StackType, frameworks) for ALL detected stacks."""
+    results = []
+
+    # ── Python ────────────────────────────────
+    if any((root / f).exists() for f in ["requirements.txt", "Pipfile", "pyproject.toml"]):
+        frameworks = []
+        if (root / "manage.py").exists(): frameworks.append("Django")
+        try:
+            _buf: io.StringIO = io.StringIO()
+            for fname in ["requirements.txt", "Pipfile"]:
+                p = root / fname
+                if p.exists():
+                    _buf.write(p.read_text().lower())
+            req: str = _buf.getvalue()
+            if "fastapi" in req:
+                frameworks.append("FastAPI")
+            if "flask" in req:
+                frameworks.append("Flask")
+        except Exception:
+            pass
+        results.append((StackType.PYTHON, frameworks))
+
+    # ── Node.js ───────────────────────────────
+    pkg_path = root / "package.json"
+    if pkg_path.exists():
+        frameworks = []
+        try:
+            pkg = json.loads(pkg_path.read_text())
+            deps = {**pkg.get("dependencies", {}), **pkg.get("devDependencies", {})}
+            fw_map = {
+                "next": "Next.js", "react": "React", "vue": "Vue.js",
+                "svelte": "Svelte", "express": "Express.js", "@nestjs/core": "NestJS",
+                "@adonisjs/core": "AdonisJS", "nuxt": "Nuxt", "astro": "Astro",
+                "hono": "Hono", "fastify": "Fastify", "vite": "Vite",
+            }
+            for key, label in fw_map.items():
+                if key in deps: frameworks.append(label)
+        except Exception:
+            pass
+        results.append((StackType.NODE, frameworks))
+
+    # ── PHP ───────────────────────────────────
+    composer_path = root / "composer.json"
+    if composer_path.exists():
+        frameworks = []
+        try:
+            comp = json.loads(composer_path.read_text())
+            reqs = {**comp.get("require", {}), **comp.get("require-dev", {})}
+            if "laravel/framework" in reqs: frameworks.append("Laravel")
+            if "symfony/symfony" in reqs: frameworks.append("Symfony")
+            if "slim/slim" in reqs: frameworks.append("Slim")
+            if "cakephp/cakephp" in reqs: frameworks.append("CakePHP")
+        except Exception:
+            pass
+        results.append((StackType.PHP, frameworks))
+
+    # ── Go ────────────────────────────────────
+    if (root / "go.mod").exists():
+        results.append((StackType.GO, []))
+
+    # ── Rust ──────────────────────────────────
+    if (root / "Cargo.toml").exists():
+        results.append((StackType.RUST, []))
+
+    # ── Java ──────────────────────────────────
+    if (root / "pom.xml").exists() or (root / "build.gradle").exists():
+        frameworks = []
+        try:
+            pom = root / "pom.xml"
+            if pom.exists() and "spring-boot" in pom.read_text():
+                frameworks.append("Spring Boot")
+        except Exception:
+            pass
+        results.append((StackType.JAVA, frameworks))
+
+    # ── Ruby ──────────────────────────────────
+    if (root / "Gemfile").exists():
+        frameworks = []
+        try:
+            gemfile = (root / "Gemfile").read_text()
+            if "rails" in gemfile.lower(): frameworks.append("Ruby on Rails")
+            if "sinatra" in gemfile.lower(): frameworks.append("Sinatra")
+        except Exception:
+            pass
+        results.append((StackType.RUBY, frameworks))
+
+    # ── Elixir ────────────────────────────────
+    if (root / "mix.exs").exists():
+        frameworks = []
+        try:
+            mix = (root / "mix.exs").read_text()
+            if "phoenix" in mix.lower(): frameworks.append("Phoenix")
+        except Exception:
+            pass
+        results.append((StackType.ELIXIR, frameworks))
+
+    if not results:
+        results.append((StackType.UNKNOWN, []))
+
+    return results
+
+
+def detect_environment(root: Path) -> EnvType:
+    if (root / ".ddev").exists(): return EnvType.DDEV
     if (root / "docker-compose.yml").exists() or (root / "docker-compose.yaml").exists():
         return EnvType.DOCKER_COMPOSE
-        
-    if (root / "Dockerfile").exists():
-        return EnvType.DOCKER
-        
+    if (root / "Dockerfile").exists(): return EnvType.DOCKER
     return EnvType.NATIVE
 
-def get_command_prefix(env_type: EnvType) -> str:
-    if env_type == EnvType.DDEV:
-        return "ddev "
-    # Docker compose is ambiguous (which service?), usually needs manual resolution by AI
-    # But for a highly targeted report, we will just inform the AI
+
+def get_command_prefix(env: EnvType) -> str:
+    if env == EnvType.DDEV: return "ddev "
     return ""
 
-def generate_report(project_root: str):
-    root = Path(project_root)
-    stack, frameworks = detect_stack(project_root)
-    env = detect_environment(project_root)
-    
-    report = [
+
+# ─────────────────────────────────────────────
+# Report generation
+# ─────────────────────────────────────────────
+
+FRONTEND_FRAMEWORKS = {"Next.js", "React", "Vue.js", "Svelte", "Nuxt", "Astro", "Vite"}
+BACKEND_FRAMEWORKS = {"Django", "FastAPI", "Flask", "Express.js", "NestJS", "Laravel",
+                      "Symfony", "Spring Boot", "AdonisJS", "Hono", "Fastify", "Phoenix"}
+
+
+def generate_report(root: Path) -> str:
+    stacks = detect_stacks(root)
+    env = detect_environment(root)
+
+    all_frameworks = [fw for _, fws in stacks for fw in fws]
+    all_stack_names: list[str] = [str(s.value) for s, _ in stacks if s != StackType.UNKNOWN]
+
+    lines = [
         "STACK REPORT",
-        f"Language/Platform : {stack.value}",
-        f"Frameworks        : {', '.join(frameworks) if frameworks else 'None detected'}",
-        f"Environment       : {env.value}"
+        f"Language/Platform : {', '.join(all_stack_names) if all_stack_names else 'Unknown'}",
     ]
 
-    has_frontend = any(fw in frameworks for fw in ['Next.js', 'React', 'Vue', 'Svelte', 'Nuxt', 'Astro'])
-    if has_frontend or stack == StackType.NODE:
-        report.append("UI Guidelines     : Active -> `ux-humanist-designer` (Enforce mathematical layouts & anti-slop rules).")
-        
-    has_backend = any(fw in frameworks for fw in ['Django', 'Express', 'NestJS', 'Laravel', 'Symfony', 'Spring Boot', 'AdonisJS']) or stack in [StackType.GO, StackType.PYTHON, StackType.PHP, StackType.RUST, StackType.JAVA]
-    if has_backend or (stack == StackType.NODE and not has_frontend):
-        report.append("Architecture Guide: Active -> `system-architect` (Enforce Clean Architecture, DDD, Modular boundaries).")
-        report.append("API & Integration : Active -> `api-architect` (Enforce REST/GraphQL standards & Payload structure).")
-        report.append("Database & Schema : Active -> `database-architect` (Enforce Indexing, Normalization, N+1 Prevention).")
-        
-    # Security and DevOps are always enabled regardless of stack
-    report.append("Security & Review : Active -> `sec-ops` (Enforce OWASP principles & Code Review severity rating).")
-    report.append("DevOps & CI/CD    : Active -> `devops-architect` (Enforce Container Immutability & Deployment pipelines).")
-    
-    # Check for shell scripts or Makefiles
+    for stack, frameworks in stacks:
+        if stack != StackType.UNKNOWN:
+            fw_str = ', '.join(frameworks) if frameworks else 'None detected'
+            lines.append(f"  └─ {stack.value} Frameworks: {fw_str}")
+
+    lines.append(f"Environment       : {env.value}")
+
+    has_frontend = bool(set(all_frameworks) & FRONTEND_FRAMEWORKS)
+    has_backend = bool(set(all_frameworks) & BACKEND_FRAMEWORKS) or any(
+        s in [StackType.GO, StackType.RUST, StackType.JAVA, StackType.PHP, StackType.RUBY, StackType.ELIXIR]
+        for s, _ in stacks
+    )
+
+    if has_frontend:
+        lines.append("UI Guidelines     : Active → `frontend-design` (Impeccable aesthetics & rigorous UX without AI slop).")
+    if has_backend:
+        lines.append("Architecture Guide: Active → `system-architect` (Clean Architecture, DDD, Modular boundaries).")
+        lines.append("API & Integration : Active → `api-architect` (REST/GraphQL standards & Payload structure).")
+        lines.append("Database & Schema : Active → `database-architect` (Indexing, Normalization, N+1 prevention).")
+
+    lines.append("Security & Review : Active → `sec-ops` (OWASP principles & severity-rated code review).")
+    lines.append("DevOps & CI/CD    : Active → `devops-architect` (Container immutability & deployment pipelines).")
+
     files = [f.name for f in root.iterdir() if f.is_file()]
-    if any(f.endswith(".sh") for f in files) or "Makefile" in files or ".bashrc" in files:
-        report.append("Automation Scripts: Active -> `automation-engineer` (Enforce Bash Standards & Bats Testing).")
-    
-    report.append("Error Resolution  : Active -> `systematic-debugging` (Enforce Root-Cause 5-Whys Global Trigger).")
-    
+    if any(f.endswith(".sh") for f in files) or "Makefile" in files:
+        lines.append("Automation Scripts: Active → `automation-engineer` (Bash standards & Bats testing).")
+
+    lines.append("Error Resolution  : Active → `systematic-debugging` (Root-cause 5-Whys — global trigger).")
+
     prefix = get_command_prefix(env)
     if prefix:
-        report.append(f"Command Prefix    : MUST prepend all commands with `{prefix}` (e.g., `{prefix}composer install`, `{prefix}npm install`)")
+        lines.append(f"Command Prefix    : MUST prepend all commands with `{prefix}`")
     elif env == EnvType.DOCKER_COMPOSE:
-         report.append("Command Guideline : Docker Compose detected. Make sure to run commands inside the appropriate container using `docker-compose exec <service> <command>`.")
+        lines.append("Command Guideline : Docker Compose detected — use `docker-compose exec <service> <cmd>`.")
     else:
-        report.append("Command Guideline : Run commands natively.")
-        
-    return "\n".join(report)
+        lines.append("Command Guideline : Run commands natively.")
+
+    return "\n".join(lines)
+
+
+def generate_json_report(root: Path) -> str:
+    stacks = detect_stacks(root)
+    env = detect_environment(root)
+    return json.dumps({
+        "root": str(root),
+        "stacks": [{"language": s.value, "frameworks": fws} for s, fws in stacks],
+        "environment": env.value,
+    }, indent=2)
+
+
+# ─────────────────────────────────────────────
+# CLI
+# ─────────────────────────────────────────────
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Detect project stack and output agent routing recommendations."
+    )
+    parser.add_argument(
+        "--root", type=str, default=None,
+        help="Project root path. Defaults to nearest ancestor containing .agent/"
+    )
+    parser.add_argument(
+        "--json", action="store_true",
+        help="Output raw JSON instead of human-readable report"
+    )
+    args = parser.parse_args()
+
+    root = Path(args.root).resolve() if args.root else find_project_root()
+
+    if not root.exists():
+        print(f"❌ Root path does not exist: {root}")
+        sys.exit(1)
+
+    if args.json:
+        print(generate_json_report(root))
+    else:
+        print(generate_report(root))
+
 
 if __name__ == "__main__":
-    import sys
-    # Default to current working directory
-    target_dir = sys.argv[1] if len(sys.argv) > 1 else "."
-    
-    print(generate_report(target_dir))
+    main()

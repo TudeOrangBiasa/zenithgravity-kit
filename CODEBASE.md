@@ -1,17 +1,17 @@
 # Codebase Map
 
-This document serves as the single source of truth for the AI to navigate this project's architecture and understand component relationships.
+This document maps the project architecture and component relationships.
 
-## Directory Structure & Responsibilities
+## Directory Structure
 
-- **`/.agent/`**: Native Agentic Kit root. Contains all AI governance rules, personas, workflow recipes, and skills.
-  - **`rules/`**: Strictly contains ONLY `GEMINI.md` (Highest priority, global routing & governance).
-  - **`agents/`**: Core AI personas/coordinators (e.g., orchestrator, project-planner).
+- **`/.agent/`**: Native Agentic Kit root. Contains AI governance rules, personas, workflow recipes, and skills.
+  - **`rules/`**: Contains only `GEMINI.md` (Highest priority, global routing & governance).
+  - **`agents/`**: Core AI personas (e.g., orchestrator, project-planner).
   - **`skills/`**: Modular capabilities loaded dynamically via YAML frontmatter in `SKILL.md` files.
   - **`memory/`**: Custom state anchors for injecting persistent context (e.g., design systems, API endpoints).
-  - **`workflows/`**: Step-by-step sequential recipes for specific tasks (e.g., `/create`, `/plan`). Auto-triggered via Intent Mapping.
-  - **`scripts/`**: Cross-platform automation tools (Python) including `detect_stack.py` and `verify_changes.py`.
-  - **`logs/`**: (Ignored) Temporary execution logs for verification gates.
+  - **`workflows/`**: Sequential recipes for specific tasks (e.g., `/create`, `/plan`). Auto-triggered via Intent Mapping.
+  - **`scripts/`**: Cross-platform Python automation tools like `detect_stack.py` and `verify_changes.py`.
+  - **`logs/`**: (Ignored) Temporary execution logs.
 
 ## Key Dependencies & Interactions
 

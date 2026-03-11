@@ -1,12 +1,15 @@
-# DESIGN SYSTEM MEMORY
+# Design System Memory (State Anchor)
 
-## PROJECT STACK
-- **UI Framework**: Vanilla / Undetermined
-- **Component Lib**: None detected (`@/components/ui/` missing)
+> **Purpose:** Single source of truth for UI generation. AI agents MUST read this file before designing components.
 
-## STYLE TOKENS
-- **Grid**: 8px base.
-- **Radius**: `md` (~6px).
-- **Depth**: Subtle Layering (Borders + BG shifts). **NO SHADOWS**.
-- **Aesthetic**: Mathematical (Phi / Modular scale).
-- **Ban**: Purple/Indigo gradients; Inter/Arial fonts.
+## Framework Context & Literacy
+- **Detected UI Stack**: Vanilla / Undetermined
+> **Constraint**: No local UI components detected in `components/ui/`.
+
+## Design & Aesthetic Constraints (frontend-design / impeccable)
+- **Bold Intent**: Choose a clear aesthetic direction (minimalist, luxury, brutalist, etc.) and stick to it.
+- **Anti-Slop Ban**: NEVER use generic purple/indigo gradients, lazy Inter/Arial fonts, or meaningless shadow.
+- **Typography**: Use modular scales, fluid sizing, and distinctive font pairings.
+- **Color**: Modern OKLCH palettes, tint neutrals to brand hue, avoid pure black/white.
+- **Space & Layout**: Visual rhythm through varied padding/gap. Break out of generic identical card grids.
+- **Reference Data**: UI elements must align with `@teach-impeccable` context if exists.

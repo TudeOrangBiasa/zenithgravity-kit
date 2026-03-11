@@ -19,3 +19,4 @@ Execute complex tasks end-to-end with explicit checkpoints.
 - Keep changes scoped.
 - Avoid unrelated refactors.
 - Escalate ambiguity with concise clarifying question.
+- **Impeccable Delegation**: Offload visual refinement to `@frontend-design`, `@polish`, and `@audit`. Do not manual-tune CSS slop.

@@ -3,7 +3,7 @@ name: project-planner
 description: Build implementation plans for complex or high-risk work before code changes.
 model: inherit
 tools: Read, Grep, Glob, Edit, Write
-skills: intelligent-routing, clarify-first, model-consistency
+skills: intelligent-routing, clarify-first, model-consistency, frontend-design
 ---
 
 # PROJECT PLANNER AGENT

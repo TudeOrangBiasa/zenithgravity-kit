@@ -15,21 +15,21 @@ const command = args[0];
 
 function printHelp() {
   console.log(`
-Zenithgravity-kit CLI v${version}
+🚀 \x1b[1mZenithgravity-kit CLI v${version}\x1b[0m
 
-Usage:
+\x1b[36mUsage:\x1b[0m
   npx zenithgravity <command> [options]
   zenithgravity <command> [options] (if installed globally)
 
-Commands:
+\x1b[36mCommands:\x1b[0m
   init      Initialize the .agent directory in your current project.
-            (Copies the kit's rules, skills, memory, and workflows).
-  sync      Run the memory sync script in the current project to update
-            the AI's design memory based on local package.json dependencies.
+            \x1b[90m(Copies or merges the kit's rules, skills, memory, and workflows without deleting external skills).\x1b[0m
+  sync      Run the memory sync script to update the AI's design memory
+            \x1b[90m(Reads local package.json dependencies).\x1b[0m
   readme    Display the contents of the Zenithgravity-kit README.
   help      Show this help message.
 
-Options:
+\x1b[36mOptions:\x1b[0m
   -v, --version  Show the version number.
   -h, --help     Show this help message.
 `);
@@ -51,9 +51,10 @@ if (command === 'init') {
   const targetAgentDir = path.join(process.cwd(), '.agent');
 
   if (fs.existsSync(targetAgentDir)) {
-    console.error('Error: .agent directory already exists in the current project.');
-    console.error('If you want to re-initialize, please remove the existing .agent directory first.');
-    process.exit(1);
+    console.log('\x1b[33m%s\x1b[0m', 'ℹ️  .agent directory already exists. Unifying and merging Zenithgravity-kit files...');
+    console.log('\x1b[90m%s\x1b[0m', '   (External skills and custom files will NOT be deleted)');
+  } else {
+    console.log('\x1b[36m%s\x1b[0m', 'Creating .agent directory structure...');
   }
 
   try {
@@ -66,11 +67,11 @@ if (command === 'init') {
         process.exit(1);
     }
     
-    console.log(`Zenithgravity-kit v${version} successfully initialized!`);
-    console.log('The .agent directory has been copied to your project.');
-    console.log('You can now use Zenithgravity Agentic workflows in this workspace.');
+    console.log(`\n✅ \x1b[32m\x1b[1mZenithgravity-kit v${version} successfully initialized!\x1b[0m`);
+    console.log('The .agent directory is ready in your workspace.');
+    console.log('You can now use Zenithgravity Agentic workflows and Impeccable skills.');
   } catch (err) {
-    console.error('Error copying .agent directory:', err);
+    console.error('\n❌ \x1b[31mError copying .agent directory:\x1b[0m', err);
     process.exit(1);
   }
 } else if (command === 'sync') {
@@ -100,9 +101,9 @@ if (command === 'init') {
   const readmePath = path.join(__dirname, '..', 'README.md');
   if (fs.existsSync(readmePath)) {
     const readmeContent = fs.readFileSync(readmePath, 'utf8');
-    console.log('\n--- Zenithgravity-kit README ---\n');
+    console.log('\n\x1b[1m\x1b[36m================ ZENITHGRAVITY-KIT README ================\x1b[0m\n');
     console.log(readmeContent);
-    console.log('\n--- End of README ---\n');
+    console.log('\n\x1b[1m\x1b[36m====================== END OF README =====================\x1b[0m\n');
   } else {
     console.error('Error: README.md not found.');
     process.exit(1);

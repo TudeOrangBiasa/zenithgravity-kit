@@ -5,6 +5,21 @@ All notable changes to the **Zenithgravity-kit** project will be documented in t
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.0.6] - 2026-03-11
+
+### Added
+- **Support for Smithery CLI**: Native support for installing 3rd party extension skills directly via `@smithery/cli`.
+- **Humanizer Writer**: Added `.agent/skills/humanizer/SKILL.md` to strip robotic patterns from documentation and copy.
+- **Impeccable Skills Integration**: Fully integrated the `Impeccable` frontend design suite by Paul Bakaus ([pbakaus/impeccable](https://github.com/pbakaus/impeccable)). Combats "AI UI Slop" (e.g., overused Inter fonts, purple gradients, excessive cards) by providing deep aesthetic constraints and 17 actionable steering commands (`/audit`, `/polish`, `/bolder`, `/quieter`, `/delight`, etc.).
+- **Frontend Design Anchor**: Replaced the previous `ux-humanist-designer` skill with the official Impeccable `frontend-design` core skill.
+
+### Changed
+- **CLI Initialization**: `npx zenithgravity init` no longer fails if the `.agent` directory exists. It now performs a smart merge/overwrite, preserving any external user-installed skills while updating core kit files.
+- **CLI Console Output**: Enhanced the interactive help and readme display commands using ANSI styling for better terminal readability.
+- **Intelligent Routing Expansion**: Updated `.agent/skills/intelligent-routing/` to explicitly map and coordinate all 17 new Impeccable commands for precise UI refinement.
+
+
 ## [1.0.5] - 2026-03-10
 
 ### Added
@@ -15,8 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **High-Density Skill Refactor**: Systematically refactored all 18 internal `SKILL.md` files into a token-efficient, rule-based format, reducing prompt overhead by ~60% while maintaining 100% technical logic.
-- **Framework De-bloating**: Refactored `GEMINI.md`, agent profiles (`orchestrator`, `project-planner`), and memory anchors to remove decorative ASCII, redundant prose, and tutorial-like content.
+- **High-Density Skill Refactor**: Systematically refactored all internal `SKILL.md` files into a token-efficient, rule-based format, reducing prompt overhead by ~60% while maintaining technical logic.
+- **Framework De-bloating**: Refactored `GEMINI.md`, agent profiles (`orchestrator`, `project-planner`), and memory anchors to remove decorative ASCII, redundant prose, and tutorial content.
 - **Memory Optimization**: Converted `.agent/memory/` files into pure state anchors, eliminating logic redundancy with the skills layer.
 
 ## [1.0.4] - 2026-03-09
