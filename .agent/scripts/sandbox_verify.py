@@ -85,20 +85,11 @@ def verify_node(root: Path, results: list):
         return
 
     scripts = data.get("scripts", {})
-    deps = {**data.get("dependencies", {}), **data.get("devDependencies", {})}
-
-    if "lint" in scripts:
-        results.append(run_check("ESLint/Lint", "npm run lint", root))
-    elif "eslint" in deps:
-        results.append(run_check("ESLint (direct)", "npx eslint . --max-warnings=0", root))
-
-    if "typecheck" in scripts:
-        results.append(run_check("TypeScript", "npm run typecheck", root))
-    elif "vue-tsc" in deps or "tsc" in scripts:
-        results.append(run_check("vue-tsc", "npx vue-tsc --noEmit", root))
-
-    if "build" in scripts:
-        results.append(run_check("Build check", "npm run build 2>&1 | head -50", root))
+    
+    # Automatically map target scripts without forcing specific lint names
+    for target in ["lint", "typecheck", "test", "build"]:
+        if target in scripts:
+            results.append(run_check(f"npm run {target}", f"npm run {target} 2>&1 | head -50", root))
 
 
 def verify_php(root: Path, results: list):

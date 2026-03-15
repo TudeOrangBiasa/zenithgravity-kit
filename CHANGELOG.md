@@ -5,12 +5,20 @@ All notable changes to the **Zenithgravity-kit** project will be documented in t
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
-## [1.0.6] - 2026-03-11
+## [1.1.0] - 2026-03-15
 
 ### Added
-- **Support for Smithery CLI**: Native support for installing 3rd party extension skills directly via `@smithery/cli`.
-- **Humanizer Writer**: Added `.agent/skills/humanizer/SKILL.md` to strip robotic patterns from documentation and copy.
+- **`skill-creator` Native Skill**: Shipped the official 6-step prompt engineering flow as a native, auto-routed skill.
+- **`rtk` Native Skill**: Added the complete Rust Token Killer syntax reference as a native skill to prevent hallucinated fallback commands.
+- **`verify_agent.py` Health Check**: Added missing reference to this script in `GEMINI.md` for core reliability checks.
+
+### Changed
+- **Mass Skill Audit & Patch**: Audited 16 native skills. Fully patched `self-healer`, `automation-engineer`, `clarify-first`, `behavioral-modes`, `logic-critic`, `verification-gate`, `orchestrator`, and `brainstorming`.
+- **RTK Enforcement**: Hard-wired `rtk` prefixing into all relevant skill workflows (debugging, automation, QA).
+- **Artifact-First Enforcement**: Linked `brainstorming` and other generative skills directly to the `ARTIFACT-FIRST` policy in `GEMINI.md`.
+- **Cross-Component Sync**: Fixed broken internal references across all 6 workflows (e.g., standardizing `python3`, fixing `.sh` to `.py` extensions).
+
+## [1.0.6] - 2026-03-11
 - **Impeccable Skills Integration**: Fully integrated the `Impeccable` frontend design suite by Paul Bakaus ([pbakaus/impeccable](https://github.com/pbakaus/impeccable)). Combats "AI UI Slop" (e.g., overused Inter fonts, purple gradients, excessive cards) by providing deep aesthetic constraints and 17 actionable steering commands (`/audit`, `/polish`, `/bolder`, `/quieter`, `/delight`, etc.).
 - **Frontend Design Anchor**: Replaced the previous `ux-humanist-designer` skill with the official Impeccable `frontend-design` core skill.
 

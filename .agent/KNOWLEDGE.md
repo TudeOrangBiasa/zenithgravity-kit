@@ -17,5 +17,7 @@ This file contains project-specific logic, architectural decisions, and business
 
 - **ADR 007: Cross-Platform Utility Porting**: Critical framework scripts (like `verify_changes`) must be written in Python to ensure compatibility across Linux, macOS, and Windows.
 - **ADR 008: High-Density Instruction Formatting**: All agentic instructions (Skills, Rules, Profiles) must prioritize density over readability for humans to maximize context window utility for code.
+- **ADR 009: RTK Enforcement**: Standard file dumps destroy token limits. All CLI read/scan commands must be proxied through `rtk` (Rust Token Killer) to strip boilerplate.
+- **ADR 010: Artifact-First Policy**: Agents are strictly forbidden from writing code for complex tasks before generating and receiving user approval on an `implementation_plan.md` artifact.
 
 _(Add more project-specific knowledge here as the project evolves)_

@@ -5,12 +5,12 @@ This document maps the project architecture and component relationships.
 ## Directory Structure
 
 - **`/.agent/`**: Native Agentic Kit root. Contains AI governance rules, personas, workflow recipes, and skills.
-  - **`rules/`**: Contains only `GEMINI.md` (Highest priority, global routing & governance).
-  - **`agents/`**: Core AI personas (e.g., orchestrator, project-planner).
-  - **`skills/`**: Modular capabilities loaded dynamically via YAML frontmatter in `SKILL.md` files.
+  - **`rules/`**: Global rules that ALWAYS apply. Currently only contains `GEMINI.md` (Highest priority routing & governance).
+  - **`agents/`**: Core AI personas defining who does the work (e.g., orchestrator, project-planner).
+  - **`skills/`**: Modular capabilities (the "how-to") loaded dynamically via YAML frontmatter in `SKILL.md` files.
   - **`memory/`**: Custom state anchors for injecting persistent context (e.g., design systems, API endpoints).
-  - **`workflows/`**: Sequential recipes for specific tasks (e.g., `/create`, `/plan`). Auto-triggered via Intent Mapping.
-  - **`scripts/`**: Cross-platform Python automation tools like `detect_stack.py` and `verify_changes.py`.
+  - **`workflows/`**: Strict step-by-step recipes for macro tasks (e.g., `/create`, `/plan`). Triggered by Intent Mapping in `GEMINI.md`.
+  - **`scripts/`**: Cross-platform Python automation tools (`detect_stack.py`, `verify_changes.py`, `verify_agent.py` health check).
   - **`logs/`**: (Ignored) Temporary execution logs.
 
 ## Key Dependencies & Interactions

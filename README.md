@@ -2,14 +2,16 @@
 
 Disciplined, domain-aware Agentic Engineering.
 
-This kit patches standard AI execution environments (like Antigravity IDE) by injecting State Anchors, Deep Planning rules, and modular skillsets directly into your codebase.
+AI coding assistants are fast, but they guess too much. Without tight constraints, they ignore your design system, hallucinate architecture, and blow through token limits. 
+
+This kit acts as a behavioral harness for standard AI environments (like Antigravity IDE). It injects State Anchors, Deep Planning rules, and modular skillsets directly into your codebase to keep the AI focused, compliant, and cheap.
 
 ## 🌟 Core Features
 
 - **Full-Spectrum Auto-Routing**: Natural language intents map to specialized roles (`@system-architect`, `@database-architect`, `@devops-architect`, `@systematic-debugging`).
-- **Impeccable UI Integration**: Core `frontend-design` skill with 17 actionable steering commands (`/polish`, `/audit`, `/delight`) to combat "AI UI slop".
-- **Cross-Platform Verification**: Python 3 scripts ensure zero-blind execution logic and memory syncing across Linux, macOS, and Windows.
-- **Context Compression**: Integrates with [RTK (Rust Token Killer)](https://github.com/rtk-ai/rtk) to shrink massive CLI outputs.
+- **Impeccable UI Integration**: Core `frontend-design` skill with 17 actionable steering commands (`/polish`, `/audit`, `/delight`) to combat AI-generated UI slop.
+- **Zero-Blind Execution**: Agents cannot commit code without first generating an Implementation Plan and passing Python 3 verification scripts.
+- **Token Compression**: Aggressively integrates with [RTK (Rust Token Killer)](https://github.com/rtk-ai/rtk) to shrink massive CLI outputs and save context tokens.
 
 ## 📚 Documentation
 

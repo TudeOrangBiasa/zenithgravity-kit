@@ -41,6 +41,10 @@ class StackType(Enum):
     JAVA = "Java"
     RUBY = "Ruby"
     ELIXIR = "Elixir"
+    DOTNET = ".NET / C#"
+    DART = "Dart / Flutter"
+    KOTLIN = "Kotlin"
+    SWIFT = "Swift"
     UNKNOWN = "Unknown"
 
 
@@ -48,6 +52,8 @@ class EnvType(Enum):
     DDEV = "DDEV"
     DOCKER_COMPOSE = "Docker Compose"
     DOCKER = "Docker"
+    PODMAN = "Podman"
+    NIX = "Nix Shell"
     NATIVE = "Native"
 
 
@@ -56,29 +62,37 @@ class EnvType(Enum):
 # ─────────────────────────────────────────────
 
 def detect_stacks(root: Path) -> list[tuple[StackType, list[str]]]:
-    """Returns list of (StackType, frameworks) for ALL detected stacks."""
+    """Returns list of (StackType, frameworks) for ALL detected stacks in this project."""
     results = []
 
-    # ── Python ────────────────────────────────
-    if any((root / f).exists() for f in ["requirements.txt", "Pipfile", "pyproject.toml"]):
-        frameworks = []
-        if (root / "manage.py").exists(): frameworks.append("Django")
+    # ── Python ────────────────────────────────────────────────────────────────
+    has_py = any((root / f).exists() for f in ["requirements.txt", "Pipfile", "pyproject.toml", "setup.py", "setup.cfg"])
+    if has_py:
+        frameworks: list[str] = []
+        if (root / "manage.py").exists():
+            frameworks.append("Django")
         try:
             _buf: io.StringIO = io.StringIO()
-            for fname in ["requirements.txt", "Pipfile"]:
+            for fname in ["requirements.txt", "Pipfile", "pyproject.toml"]:
                 p = root / fname
                 if p.exists():
                     _buf.write(p.read_text().lower())
             req: str = _buf.getvalue()
-            if "fastapi" in req:
-                frameworks.append("FastAPI")
-            if "flask" in req:
-                frameworks.append("Flask")
+            fw_signals = {
+                "fastapi": "FastAPI", "flask": "Flask", "litestar": "Litestar",
+                "sanic": "Sanic", "tornado": "Tornado", "aiohttp": "aiohttp",
+                "celery": "Celery", "dramatiq": "Dramatiq",
+                "sqlalchemy": "SQLAlchemy", "alembic": "Alembic",
+                "pydantic": "Pydantic", "strawberry-graphql": "Strawberry GraphQL",
+            }
+            for signal, label in fw_signals.items():
+                if signal in req:
+                    frameworks.append(label)
         except Exception:
             pass
         results.append((StackType.PYTHON, frameworks))
 
-    # ── Node.js ───────────────────────────────
+    # ── Node.js ───────────────────────────────────────────────────────────────
     pkg_path = root / "package.json"
     if pkg_path.exists():
         frameworks = []
@@ -86,71 +100,213 @@ def detect_stacks(root: Path) -> list[tuple[StackType, list[str]]]:
             pkg = json.loads(pkg_path.read_text())
             deps = {**pkg.get("dependencies", {}), **pkg.get("devDependencies", {})}
             fw_map = {
-                "next": "Next.js", "react": "React", "vue": "Vue.js",
-                "svelte": "Svelte", "express": "Express.js", "@nestjs/core": "NestJS",
-                "@adonisjs/core": "AdonisJS", "nuxt": "Nuxt", "astro": "Astro",
-                "hono": "Hono", "fastify": "Fastify", "vite": "Vite",
+                # Meta-frameworks
+                "next": "Next.js", "nuxt": "Nuxt", "astro": "Astro",
+                "@remix-run/node": "Remix", "@remix-run/react": "Remix",
+                # UI frameworks
+                "react": "React", "vue": "Vue.js", "svelte": "Svelte",
+                "solid-js": "SolidJS", "@builder.io/qwik": "Qwik",
+                "@angular/core": "Angular", "preact": "Preact",
+                # Backend / API
+                "express": "Express.js", "@nestjs/core": "NestJS",
+                "@adonisjs/core": "AdonisJS", "fastify": "Fastify",
+                "hono": "Hono", "koa": "Koa",
+                "elysia": "Elysia (Bun)", "bun": "Bun",
+                # Mobile / Desktop
+                "react-native": "React Native", "electron": "Electron",
+                "@capacitor/core": "Capacitor", "expo": "Expo",
+                # Build tools as signals
+                "vite": "Vite", "webpack": "Webpack", "esbuild": "ESBuild",
+                # State management (important context)
+                "zustand": "Zustand", "pinia": "Pinia", "@reduxjs/toolkit": "Redux Toolkit",
+                # tRPC / GraphQL
+                "@trpc/server": "tRPC", "graphql": "GraphQL", "@apollo/client": "Apollo",
+                # ORM / DB
+                "prisma": "Prisma", "drizzle-orm": "Drizzle ORM",
+                "@supabase/supabase-js": "Supabase",
             }
             for key, label in fw_map.items():
-                if key in deps: frameworks.append(label)
+                if key in deps:
+                    frameworks.append(label)
         except Exception:
             pass
         results.append((StackType.NODE, frameworks))
 
-    # ── PHP ───────────────────────────────────
+    # ── PHP ───────────────────────────────────────────────────────────────────
     composer_path = root / "composer.json"
     if composer_path.exists():
         frameworks = []
         try:
             comp = json.loads(composer_path.read_text())
             reqs = {**comp.get("require", {}), **comp.get("require-dev", {})}
-            if "laravel/framework" in reqs: frameworks.append("Laravel")
-            if "symfony/symfony" in reqs: frameworks.append("Symfony")
-            if "slim/slim" in reqs: frameworks.append("Slim")
-            if "cakephp/cakephp" in reqs: frameworks.append("CakePHP")
+            fw_map = {
+                "laravel/framework": "Laravel",
+                "laravel/lumen-framework": "Lumen",
+                "symfony/symfony": "Symfony", "symfony/framework-bundle": "Symfony",
+                "slim/slim": "Slim", "cakephp/cakephp": "CakePHP",
+                "yiisoft/yii2": "Yii2", "codeigniter4/framework": "CodeIgniter 4",
+                "filament/filament": "Filament (Admin)",
+                "livewire/livewire": "Livewire",
+                "api-platform/core": "API Platform",
+            }
+            for key, label in fw_map.items():
+                if key in reqs:
+                    frameworks.append(label)
         except Exception:
             pass
         results.append((StackType.PHP, frameworks))
 
-    # ── Go ────────────────────────────────────
+    # ── Go ────────────────────────────────────────────────────────────────────
     if (root / "go.mod").exists():
-        results.append((StackType.GO, []))
-
-    # ── Rust ──────────────────────────────────
-    if (root / "Cargo.toml").exists():
-        results.append((StackType.RUST, []))
-
-    # ── Java ──────────────────────────────────
-    if (root / "pom.xml").exists() or (root / "build.gradle").exists():
         frameworks = []
         try:
-            pom = root / "pom.xml"
-            if pom.exists() and "spring-boot" in pom.read_text():
-                frameworks.append("Spring Boot")
+            gomod = (root / "go.mod").read_text().lower()
+            fw_signals = {
+                "github.com/gin-gonic/gin": "Gin",
+                "github.com/gofiber/fiber": "Fiber",
+                "github.com/labstack/echo": "Echo",
+                "github.com/go-chi/chi": "Chi",
+                "github.com/gorilla/mux": "Gorilla Mux",
+                "github.com/go-gorm/gorm": "GORM",
+                "github.com/uptrace/bun": "Bun (Go)",
+            }
+            for signal, label in fw_signals.items():
+                if signal in gomod:
+                    frameworks.append(label)
         except Exception:
             pass
-        results.append((StackType.JAVA, frameworks))
+        results.append((StackType.GO, frameworks))
 
-    # ── Ruby ──────────────────────────────────
+    # ── Rust ──────────────────────────────────────────────────────────────────
+    if (root / "Cargo.toml").exists():
+        frameworks = []
+        try:
+            cargo = (root / "Cargo.toml").read_text().lower()
+            fw_signals = {
+                "axum": "Axum", "actix-web": "Actix-web", "rocket": "Rocket",
+                "warp": "Warp", "poem": "Poem", "salvo": "Salvo",
+                "sea-orm": "SeaORM", "diesel": "Diesel", "sqlx": "SQLx",
+                "tokio": "Tokio", "tonic": "Tonic (gRPC)",
+            }
+            for signal, label in fw_signals.items():
+                if signal in cargo:
+                    frameworks.append(label)
+        except Exception:
+            pass
+        results.append((StackType.RUST, frameworks))
+
+    # ── Java / Kotlin ─────────────────────────────────────────────────────────
+    has_java = (root / "pom.xml").exists() or (root / "build.gradle").exists()
+    has_kotlin = (root / "build.gradle.kts").exists()
+
+    if has_java or has_kotlin:
+        frameworks = []
+        try:
+            _java_buf: io.StringIO = io.StringIO()
+            for fname in ["pom.xml", "build.gradle", "build.gradle.kts"]:
+                p = root / fname
+                if p.exists():
+                    _java_buf.write(p.read_text().lower())
+            build_text: str = _java_buf.getvalue()
+            fw_signals = {
+                "spring-boot": "Spring Boot", "spring.boot": "Spring Boot",
+                "io.quarkus": "Quarkus", "micronaut": "Micronaut",
+                "ktor": "Ktor", "vertx": "Vert.x",
+                "jakarta": "Jakarta EE", "javax.enterprise": "Jakarta EE",
+                "hibernate": "Hibernate",
+            }
+            for signal, label in fw_signals.items():
+                if signal in build_text:
+                    frameworks.append(label)
+        except Exception:
+            pass
+        stack_type = StackType.KOTLIN if has_kotlin and not has_java else StackType.JAVA
+        results.append((stack_type, frameworks))
+
+    # ── Ruby ──────────────────────────────────────────────────────────────────
     if (root / "Gemfile").exists():
         frameworks = []
         try:
-            gemfile = (root / "Gemfile").read_text()
-            if "rails" in gemfile.lower(): frameworks.append("Ruby on Rails")
-            if "sinatra" in gemfile.lower(): frameworks.append("Sinatra")
+            gemfile = (root / "Gemfile").read_text().lower()
+            fw_signals = {
+                "rails": "Ruby on Rails", "sinatra": "Sinatra",
+                "hanami": "Hanami", "grape": "Grape API",
+                "roda": "Roda", "padrino": "Padrino",
+            }
+            for signal, label in fw_signals.items():
+                if signal in gemfile:
+                    frameworks.append(label)
         except Exception:
             pass
         results.append((StackType.RUBY, frameworks))
 
-    # ── Elixir ────────────────────────────────
+    # ── Elixir ────────────────────────────────────────────────────────────────
     if (root / "mix.exs").exists():
         frameworks = []
         try:
-            mix = (root / "mix.exs").read_text()
-            if "phoenix" in mix.lower(): frameworks.append("Phoenix")
+            mix = (root / "mix.exs").read_text().lower()
+            if "phoenix" in mix:
+                frameworks.append("Phoenix")
+            if "ecto" in mix:
+                frameworks.append("Ecto")
+            if "broadway" in mix:
+                frameworks.append("Broadway")
+            if "oban" in mix:
+                frameworks.append("Oban")
         except Exception:
             pass
         results.append((StackType.ELIXIR, frameworks))
+
+    # ── .NET / C# ─────────────────────────────────────────────────────────────
+    csproj_files = list(root.glob("*.csproj")) + list(root.glob("**/*.csproj"))
+    if csproj_files or list(root.glob("*.sln")):
+        frameworks = []
+        try:
+            _csproj_count = 0
+            for csproj in csproj_files:
+                if _csproj_count >= 3:
+                    break
+                _csproj_count += 1
+                text = csproj.read_text().lower()
+                if "microsoft.aspnetcore" in text:
+                    frameworks.append("ASP.NET Core")
+                if "microsoft.entityframeworkcore" in text:
+                    frameworks.append("Entity Framework Core")
+                if "maui" in text:
+                    frameworks.append(".NET MAUI")
+                if "blazor" in text:
+                    frameworks.append("Blazor")
+        except Exception:
+            pass
+        results.append((StackType.DOTNET, frameworks))
+
+    # ── Dart / Flutter ────────────────────────────────────────────────────────
+    if (root / "pubspec.yaml").exists():
+        frameworks = []
+        try:
+            pubspec = (root / "pubspec.yaml").read_text().lower()
+            if "flutter" in pubspec:
+                frameworks.append("Flutter")
+            if "dart_frog" in pubspec:
+                frameworks.append("Dart Frog")
+        except Exception:
+            pass
+        results.append((StackType.DART, frameworks))
+
+    # ── Swift ─────────────────────────────────────────────────────────────────
+    if (root / "Package.swift").exists():
+        frameworks = []
+        try:
+            pkg = (root / "Package.swift").read_text().lower()
+            if "vapor" in pkg:
+                frameworks.append("Vapor")
+            if "hummingbird" in pkg:
+                frameworks.append("Hummingbird")
+            if "swiftui" in pkg:
+                frameworks.append("SwiftUI")
+        except Exception:
+            pass
+        results.append((StackType.SWIFT, frameworks))
 
     if not results:
         results.append((StackType.UNKNOWN, []))
@@ -159,10 +315,16 @@ def detect_stacks(root: Path) -> list[tuple[StackType, list[str]]]:
 
 
 def detect_environment(root: Path) -> EnvType:
-    if (root / ".ddev").exists(): return EnvType.DDEV
+    if (root / ".ddev").exists():
+        return EnvType.DDEV
+    if (root / "podman-compose.yml").exists() or (root / "podman-compose.yaml").exists():
+        return EnvType.PODMAN
     if (root / "docker-compose.yml").exists() or (root / "docker-compose.yaml").exists():
         return EnvType.DOCKER_COMPOSE
-    if (root / "Dockerfile").exists(): return EnvType.DOCKER
+    if (root / "Dockerfile").exists():
+        return EnvType.DOCKER
+    if (root / "flake.nix").exists() or (root / "shell.nix").exists():
+        return EnvType.NIX
     return EnvType.NATIVE
 
 

@@ -2,11 +2,15 @@
 name: api-architect
 description: Use when designing new API endpoints (REST, GraphQL, tRPC), establishing JSON payload contracts, planning API versioning, or setting up API responses/pagination regardless of the backing language.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   priority: high
 ---
 
 # API ARCHITECT
+
+## CONTEXT SYNC
+- Mandatory: Read `.agent/memory/system-architecture.md` before designing any endpoint.
+- Respect existing auth patterns, pagination conventions, and versioning strategy.
 
 ## REST CONVENTIONS
 - **Nouns Only**: `/users`, not `/getUsers`.
@@ -22,3 +26,6 @@ metadata:
 ## SECURITY
 - Throttle/Rate-Limit assumption.
 - Filter exposure via query params (`?role=admin&sort=-id`).
+
+## RTK ENFORCEMENT
+- Test endpoints with `rtk curl <url>` for compact HTTP response output.

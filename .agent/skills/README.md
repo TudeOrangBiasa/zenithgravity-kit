@@ -1,11 +1,11 @@
 # 🧠 Agent Skills Architecture
 
-This directory houses the modular cognitive capabilities of the Zenithgravity-kit framework. Skills are localized context payloads that teach the AI how to write code according to specific architectural standards, design systems, or tech stacks.
+This directory holds specific instructions for different tasks. Skills are localized rules that teach the AI how to write code according to your architectural standards, design systems, or tech stack.
 
 ## 🌟 Core vs. Extension Skills
 
-- **Core Skills**: The foundational architecture that ships natively with Zenithgravity (e.g., `system-architect`, `database-architect`, `devops-architect`, `systematic-debugging`, `sec-ops`, `frontend-design`, `humanizer`). These enforce general software engineering discipline.
-- **Extension Skills**: Framework or project-specific skills (e.g., `nextjs-expert`, `laravel-patterns`) that you add to tailor the AI to your exact stack. 
+- **Core Skills**: The foundational architecture that ships natively with Zenithgravity (e.g., `system-architect`, `database-architect`, `devops-architect`, `systematic-debugging`, `sec-ops`, `frontend-design`, `humanizer`, `skill-creator`, `rtk`). These enforce general software engineering discipline.
+- **Extension Skills**: Framework or project-specific skills (e.g., `nextjs-expert`, `laravel-patterns`) that you add to tailor the AI to your exact stack.
 
 ## 🔌 Installing 3rd-Party Skills via Smithery
 

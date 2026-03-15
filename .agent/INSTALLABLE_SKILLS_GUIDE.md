@@ -1,6 +1,6 @@
 # Framework Agnostic Extension Guide
 
-This native kit is framework agnostic. The core skills (`behavioral-modes`, `orchestrator`, `quality-assurance`, `system-architect`, `database-architect`, `api-architect`, `sec-ops`, `devops-architect`, `systematic-debugging`, `automation-engineer`, `humanizer`) apply to Python, Go, PHP, or JavaScript.
+This native kit is framework agnostic. The core skills (`behavioral-modes`, `orchestrator`, `quality-assurance`, `system-architect`, `database-architect`, `api-architect`, `sec-ops`, `devops-architect`, `systematic-debugging`, `automation-engineer`, `clarify-first`, `logic-critic`, `self-healer`, `intellegent-routing`, `verification-gate`, `brainstroming`) apply to Python, Go, PHP, or JavaScript.
 
 ## The "Installable Skills" Concept
 
@@ -17,9 +17,11 @@ When you drop this `.agent` folder into a new project, you can "install" specifi
 Install remote community skills directly into this architecture using the [Smithery CLI](https://smithery.ai). The `.agent` directory follows standard Agentic formats, ensuring seamless installations.
 
 **Example: Installing the `humanizer` skill by @blader:**
+
 ```bash
 npx @smithery/cli@latest skill add davila7/humanizer --agent antigravity
 ```
+
 *This command automatically downloads and mounts the `humanizer` skill into your `.agent/skills/` directory.*
 
 ### Example: Custom `nextjs-expert` Skill

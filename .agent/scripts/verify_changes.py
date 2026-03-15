@@ -12,6 +12,7 @@ import subprocess
 import argparse
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 
 # ─────────────────────────────────────────────
@@ -29,7 +30,7 @@ def log_message(message: str):
         f.write(f"[{timestamp}] {message}\n")
 
 
-def run_command(command: str, timeout: int) -> bool:
+def run_command(command: str, timeout: int, cwd: Optional[Path] = None) -> bool:
     print(f"\n\033[1m▶ VERIFICATION:\033[0m {command}")
     log_message(f"RUN: {command}")
 
@@ -40,6 +41,7 @@ def run_command(command: str, timeout: int) -> bool:
             capture_output=True,
             text=True,
             timeout=timeout,
+            cwd=str(cwd) if cwd else None,
         )
 
         # Always show stdout/stderr so agent can see output
@@ -79,14 +81,21 @@ def main():
         "--timeout", type=int, default=120,
         help="Timeout in seconds per command (default: 120)"
     )
+    parser.add_argument(
+        "--cwd", type=str, default=None,
+        help="Working directory to run commands in (useful for monorepos)"
+    )
     args = parser.parse_args()
 
+    cwd = Path(args.cwd).resolve() if args.cwd else None
     print(f"\033[1m🔍 Running {len(args.commands)} verification command(s) — timeout: {args.timeout}s\033[0m")
+    if cwd:
+        print(f"   Working directory: {cwd}")
 
     results: list[bool] = []
 
     for cmd in args.commands:
-        results.append(run_command(cmd, args.timeout))
+        results.append(run_command(cmd, args.timeout, cwd))
 
     passed: int = sum(1 for r in results if r)
     failed: int = sum(1 for r in results if not r)

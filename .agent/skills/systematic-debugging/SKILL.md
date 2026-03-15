@@ -2,7 +2,7 @@
 name: systematic-debugging
 description: A 4-phase structured debugging methodology focusing on root cause analysis over trial and error. Use whenever the user reports a bug, crash, or an unexpected error message.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   priority: critical
 ---
 
@@ -18,3 +18,7 @@ metadata:
 - **Location**: `file:line`
 - **Root Cause**: 1-2 sentence tech explanation.
 - **Proposed Fix**: Exact code change.
+
+## RTK ENFORCEMENT
+- Reproduce failures with RTK to get clean output: `rtk vitest run`, `rtk cargo test`, `rtk err <cmd>`.
+- Use `rtk log <file>` for deduplicated log analysis with counts.

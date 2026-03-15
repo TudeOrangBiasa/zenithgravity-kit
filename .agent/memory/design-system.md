@@ -3,7 +3,7 @@
 > **Purpose:** Single source of truth for UI generation. AI agents MUST read this file before designing components.
 
 ## Framework Context & Literacy
-- **Detected UI Stack**: Vanilla / Undetermined
+- **Detected Raw Dependencies**: None
 > **Constraint**: No local UI components detected in `components/ui/`.
 
 ## Design & Aesthetic Constraints (frontend-design / impeccable)
@@ -12,4 +12,4 @@
 - **Typography**: Use modular scales, fluid sizing, and distinctive font pairings.
 - **Color**: Modern OKLCH palettes, tint neutrals to brand hue, avoid pure black/white.
 - **Space & Layout**: Visual rhythm through varied padding/gap. Break out of generic identical card grids.
-- **Reference Data**: UI elements must align with `@teach-impeccable` context if exists.
+- **Reference Data**: Run `@teach-impeccable` to initialize brand & UI constraints.

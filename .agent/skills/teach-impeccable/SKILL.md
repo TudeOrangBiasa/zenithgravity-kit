@@ -44,26 +44,40 @@ STOP and call the AskUserQuestionTool to clarify. Focus only on what you couldn'
 
 Skip questions where the answer is already clear from the codebase exploration.
 
-## Step 3: Write Design Context
+## Step 3: Write Visual Design Context
 
-Synthesize your findings and the user's answers into a `## Design Context` section:
+Synthesize your findings and the user's answers into a `## Design & Aesthetic Constraints` section.
+
+**CRITICAL TYPOGRAPHY RULES**:
+- **Base Size**: Force a minimum base font size of 16px (recommend 17px / 1.05x bump for dashboards/ERP to prevent eye strain).
+- **Modular Scale**: Define a 5-size system (xs, sm, base, lg, xl).
+- **Font Selection**: NEVER recommend generic fonts (Inter, Roboto, Arial, Open Sans). Recommend distinctive fonts (e.g., Instrument Sans, Onest, Lora) or native System Fonts (Segoe UI, -apple-system).
 
 ```markdown
-## Design Context
-
-### Users
-[Who they are, their context, the job to be done]
-
-### Brand Personality
+### Users & Brand Personality
+[Who they are, context, job to be done]
 [Voice, tone, 3-word personality, emotional goals]
+
+### Visual Identity Tokens
+- **Color Palette**: [Semantic CSS variables or Hex codes: Primary, Secondary, Background, Muted, Accents]
+- **Typography Scale**: [Specify Base size (e.g., 17px), Heading sizes (H1, H2, H3), and Modular Scale]
+- **Typography Family**: [Specify Distinctive Sans/Serif or System UI. DO NOT use generic fonts like Inter/Roboto]
 
 ### Aesthetic Direction
 [Visual tone, references, anti-references, theme]
 
 ### Design Principles
-[3-5 principles derived from the conversation that should guide all design decisions]
+[3-5 principles derived from the conversation that should guide all UI atomic/molecule component design decisions]
 ```
 
-Write this section to CLAUDE.md in the project root. If the file exists, append or update the Design Context section.
+Write this section to **`.agent/memory/teach-impeccable.md`** in the project root. If the file exists, overwrite it.
 
-Confirm completion and summarize the key design principles that will now guide all future work.
+## Step 4: MANDATORY SYNCHRONIZATION EXECUTION
+
+**MANDATORY**: Once `.agent/memory/teach-impeccable.md` is successfully written, you MUST autonomously execute the following command in the terminal to compile the single-source-of-truth memory file:
+
+```bash
+python3 .agent/scripts/sync_memory.py
+```
+
+Confirm completion to the user and summarize the key design principles that have been anchored into the memory system.

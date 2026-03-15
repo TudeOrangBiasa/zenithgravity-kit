@@ -7,11 +7,11 @@ A low-effort native kit for Antigravity IDE with stable routing and reduced mode
 - `rules/` -> always-on governance (`GEMINI.md` only)
 - `agents/` -> execution coordinators
 - `skills/` -> modular capabilities
-  - **Core**: Framework-agnostic (`orchestrator`, `frontend-design`, `system-architect`, `database-architect`, `api-architect`, `sec-ops`, `devops-architect`, `systematic-debugging`, `automation-engineer`, `humanizer`). Included in base kit.
+  - **Core**: Framework-agnostic (`orchestrator`, `frontend-design`, `system-architect`, `database-architect`, `api-architect`, `sec-ops`, `devops-architect`, `systematic-debugging`, `automation-engineer`, `humanizer`, `skill-creator`, `rtk`). Included in base kit.
   - **Extensions**: Framework-specific (`laravel-expert`, `nextjs-expert`). Installed via manual creation or [Smithery CLI](https://smithery.ai).
 - `memory/` -> persistent context anchors 
 - `workflows/` -> step-by-step sequential recipes
-- `scripts/` -> python verification helpers
+- `scripts/` -> python verification and health check helpers
 
 ## Load Strategy
 1. `rules/GEMINI.md` (Intent Mapping)
@@ -23,6 +23,7 @@ A low-effort native kit for Antigravity IDE with stable routing and reduced mode
 - **Auto-Discovery**: `scripts/detect_stack.py` identifies environments (Native, Docker, testing frameworks) prior to planning.
 - **Auto-Routing**: Natural language commands automatically map to `workflows/` via `.agent/skills/intelligent-routing/`.
 - **Zero-Blind Execution**: `verify_changes.py` gates unverified commits.
+- **System Health Checks**: `sandbox_verify.py` and `verify_agent.py` ensure the IDE environment and `.agent` folder are stable.
 
 ## Complexity Gate
 - Trivial/local task: direct `/create`

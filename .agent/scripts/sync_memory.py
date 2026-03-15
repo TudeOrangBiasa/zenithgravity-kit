@@ -33,103 +33,24 @@ def find_project_root(start: Optional[Path] = None) -> Path:
 # Detectors
 # ─────────────────────────────────────────────
 
-def detect_ui_kit(deps: dict) -> list[str]:
-    ui_kits = []
-    checks = {
-        "tailwindcss": "Tailwind CSS",
-        "@radix-ui/react-dialog": "Radix Primitives",
-        "@radix-ui/react-slot": "Radix Primitives",
-        "framer-motion": "Framer Motion",
-        "lucide-react": "Lucide React Icons",
-        "lucide-vue-next": "Lucide Vue Icons",
-        "@chakra-ui/react": "Chakra UI",
-        "@mui/material": "Material UI",
-        "shadcn-ui": "Shadcn UI",
-        "@headlessui/vue": "Headless UI (Vue)",
-        "@headlessui/react": "Headless UI (React)",
-        "vuetify": "Vuetify",
-        "naive-ui": "Naive UI",
-        "element-plus": "Element Plus",
-    }
-    seen = set()
-    for key, label in checks.items():
-        if key in deps and label not in seen:
-            ui_kits.append(label)
-            seen.add(label)
-    return ui_kits
-
-
-def detect_backend_stack(deps: dict) -> list[str]:
-    tools = []
-    checks = {
-        "prisma": "Prisma ORM",
-        "@prisma/client": "Prisma ORM",
-        "typeorm": "TypeORM",
-        "mongoose": "Mongoose (MongoDB)",
-        "express": "Express.js",
-        "@nestjs/core": "NestJS",
-        "graphql": "GraphQL",
-        "@adonisjs/core": "AdonisJS",
-        "lucid": "Lucid ORM",
-        "@adonisjs/lucid": "Lucid ORM",
-        "sequelize": "Sequelize",
-        "drizzle-orm": "Drizzle ORM",
-        "knex": "Knex.js",
-        "hono": "Hono",
-        "fastify": "Fastify",
-    }
-    seen = set()
-    for key, label in checks.items():
-        if key in deps and label not in seen:
-            tools.append(label)
-            seen.add(label)
-    return tools
-
-
-def detect_php_backend(composer_data: dict) -> list[str]:
-    reqs = {**composer_data.get("require", {}), **composer_data.get("require-dev", {})}
-    tools = []
-    if "laravel/framework" in reqs: tools.append("Laravel")
-    if "symfony/symfony" in reqs: tools.append("Symfony")
-    if "doctrine/orm" in reqs: tools.append("Doctrine ORM")
-    if "slim/slim" in reqs: tools.append("Slim Framework")
-    return tools
-
-
-def detect_python_backend(content: str) -> list[str]:
-    tools = []
-    checks = {
-        "django": "Django",
-        "fastapi": "FastAPI",
-        "flask": "Flask",
-        "sqlalchemy": "SQLAlchemy",
-        "tortoise-orm": "Tortoise ORM",
-        "starlette": "Starlette",
-    }
-    lower = content.lower()
-    for key, label in checks.items():
-        if key in lower:
-            tools.append(label)
-    return tools
-
-
-def detect_qa_tools(pkg_data: dict, composer_data: dict, req_content: str) -> list[str]:
-    qa_tools = []
+def get_raw_dependencies(pkg_data: dict, composer_data: dict, req_content: str) -> list[str]:
+    raw_deps = set()
+    
     deps = {**pkg_data.get("dependencies", {}), **pkg_data.get("devDependencies", {})}
-
-    node_qa = {"jest": "Jest", "vitest": "Vitest", "cypress": "Cypress (E2E)",
-                "@playwright/test": "Playwright (E2E)", "mocha": "Mocha", "@testing-library/vue": "Testing Library"}
-    for key, label in node_qa.items():
-        if key in deps: qa_tools.append(label)
-
+    for dep in deps.keys():
+        raw_deps.add(dep)
+        
     reqs = {**composer_data.get("require", {}), **composer_data.get("require-dev", {})}
-    if "phpunit/phpunit" in reqs: qa_tools.append("PHPUnit")
-    if "pestphp/pest" in reqs: qa_tools.append("Pest")
-
-    if "pytest" in req_content: qa_tools.append("PyTest")
-    if "unittest" in req_content: qa_tools.append("Unittest")
-
-    return qa_tools
+    for req in reqs.keys():
+        raw_deps.add(req)
+        
+    for line in req_content.splitlines():
+        line = line.strip()
+        if line and not line.startswith('#'):
+            pkg_name = line.split('==')[0].split('>')[0].split('<')[0]
+            raw_deps.add(pkg_name)
+            
+    return sorted(list(raw_deps))
 
 
 def detect_cicd_pipelines(base_path: Path) -> list[str]:
@@ -177,22 +98,68 @@ def detect_architecture_patterns(base_path: Path) -> list[str]:
 
 
 def scan_components(base_path: Path) -> list[str]:
-    """Scan for locally defined UI components across multiple extensions."""
-    candidates = [
-        base_path / "components" / "ui",
-        base_path / "src" / "components" / "ui",
-        base_path / "src" / "components",
-        base_path / "components",
-    ]
-    target_dir = next((d for d in candidates if d.exists()), None)
-    if not target_dir:
-        return []
+    """
+    Dynamically discover UI components by traversing the project tree.
+    This approach is framework-agnostic and eliminates false-negatives from static path whitelists.
+    
+    Strategy:
+    - Walk the entire project (up to reasonable depth)
+    - Skip known noise directories (node_modules, vendor, dist, .git, cache, etc.)
+    - Detect component files by extension AND PascalCase naming convention
+    - Deduplicate by stem name (same component name from multiple dirs = 1 entry)
+    """
+    # Directories to fully prune/skip — no components will ever live here
+    SKIP_DIRS: set[str] = {
+        "node_modules", "vendor", ".git", ".svn", ".hg",
+        "dist", "build", "out", ".next", ".nuxt", ".svelte-kit",
+        "__pycache__", ".cache", ".temp", ".tmp",
+        "coverage", ".nyc_output", "storybook-static",
+        "public", "storage", "bootstrap", "bin",
+        ".agent", ".idea", ".vscode",
+    }
 
-    extensions = ["*.tsx", "*.jsx", "*.vue", "*.svelte", "*.js"]
-    components = []
-    for ext in extensions:
-        components += [f"`<{f.stem}>`" for f in target_dir.glob(ext)]
-    return sorted(set(components))
+    # File extensions that indicate a UI component file
+    COMPONENT_EXTENSIONS: set[str] = {
+        ".tsx", ".jsx", ".vue", ".svelte", ".astro", ".blade.php",
+    }
+
+    # Max depth to recurse (prevents traversing entire filesystem for edge-case paths)
+    MAX_DEPTH = 8
+
+    components: set[str] = set()
+
+    def _walk(current: Path, depth: int) -> None:
+        if depth > MAX_DEPTH:
+            return
+        try:
+            for entry in current.iterdir():
+                if not entry.exists():
+                    continue
+                if entry.is_dir():
+                    if entry.name in SKIP_DIRS or entry.name.startswith("."):
+                        continue
+                    _walk(entry, depth + 1)
+                elif entry.is_file():
+                    # Handle compound extensions like .blade.php
+                    suffix = "".join(entry.suffixes).lower()
+                    if suffix not in COMPONENT_EXTENSIONS:
+                        # Fallback single suffix check
+                        if entry.suffix.lower() not in {s for s in COMPONENT_EXTENSIONS if "." in s}:
+                            continue
+
+                    # PascalCase heuristic: component names start with uppercase
+                    stem = entry.name
+                    for ext in [".blade.php", ".stories.tsx", ".stories.jsx", ".stories.vue", ".test.tsx", ".spec.tsx"]:
+                        stem = stem.replace(ext, "")
+                    stem = stem.replace(entry.suffix, "")
+
+                    if stem and stem[0].isupper() and not stem.startswith("_"):
+                        components.add(f"`<{stem}>`")
+        except PermissionError:
+            pass
+
+    _walk(base_path, depth=0)
+    return sorted(list(components))
 
 
 # ─────────────────────────────────────────────
@@ -233,15 +200,9 @@ def generate_memory_files(base_path: Path):
                 pass
     req_content: str = _req_buf.getvalue()
 
-    all_deps = {**pkg_data.get("dependencies", {}), **pkg_data.get("devDependencies", {})}
-    ui_kits = detect_ui_kit(all_deps)
-    be_tools = detect_backend_stack(all_deps)
-    be_tools.extend(detect_php_backend(comp_data))
-    be_tools.extend(detect_python_backend(req_content))
-
+    raw_deps = get_raw_dependencies(pkg_data, comp_data, req_content)
     local_components = scan_components(base_path)
     arch_patterns = detect_architecture_patterns(base_path)
-    qa_tools = detect_qa_tools(pkg_data, comp_data, req_content)
     cicd_pipelines = detect_cicd_pipelines(base_path)
 
     memory_dir = base_path / ".agent" / "memory"
@@ -252,7 +213,7 @@ def generate_memory_files(base_path: Path):
         "# Design System Memory (State Anchor)\n",
         "> **Purpose:** Single source of truth for UI generation. AI agents MUST read this file before designing components.\n",
         "## Framework Context & Literacy",
-        f"- **Detected UI Stack**: {', '.join(ui_kits) if ui_kits else 'Vanilla / Undetermined'}",
+        f"- **Detected Raw Dependencies**: {', '.join(raw_deps) if raw_deps else 'None'}",
     ]
 
     if local_components:
@@ -271,8 +232,17 @@ def generate_memory_files(base_path: Path):
         "- **Typography**: Use modular scales, fluid sizing, and distinctive font pairings.",
         "- **Color**: Modern OKLCH palettes, tint neutrals to brand hue, avoid pure black/white.",
         "- **Space & Layout**: Visual rhythm through varied padding/gap. Break out of generic identical card grids.",
-        "- **Reference Data**: UI elements must align with `@teach-impeccable` context if exists.",
     ]
+
+    impeccable_path = memory_dir / "teach-impeccable.md"
+    if impeccable_path.exists():
+        ui_content.append(f"\n## Visual Tokens (from @teach-impeccable)\n")
+        try:
+            ui_content.append(impeccable_path.read_text())
+        except Exception as e:
+            ui_content.append(f"> ⚠️ Failed to read teach-impeccable.md: {e}")
+    else:
+        ui_content.append("- **Reference Data**: Run `@teach-impeccable` to initialize brand & UI constraints.")
 
     (memory_dir / "design-system.md").write_text("\n".join(ui_content))
 
@@ -290,10 +260,8 @@ def generate_memory_files(base_path: Path):
     else:
         sys_content.append("- **Detected Architecture Patterns**: Standard/Flat (No explicit macro-architecture found).")
 
-    if be_tools:
-        sys_content.append(f"- **Detected Core Tools & ORMs**: {', '.join(be_tools)}")
-    if qa_tools:
-        sys_content.append(f"- **Testing & QA Stack**: {', '.join(qa_tools)}")
+    if raw_deps:
+        sys_content.append(f"- **Detected Raw Dependencies**: {', '.join(raw_deps)}")
     if cicd_pipelines:
         sys_content.append(f"- **CI/CD & DevOps**: {', '.join(cicd_pipelines)}")
 
@@ -311,12 +279,9 @@ def generate_memory_files(base_path: Path):
 
     elapsed = time.monotonic() - t_start
     print(f"✅ Memory sync complete ({elapsed:.2f}s)")
-    print(f"   design-system.md    → UI: {', '.join(ui_kits) or 'Vanilla'} | Components: {len(local_components)}")
+    print(f"   design-system.md    → Components: {len(local_components)}")
     print(f"   system-architecture.md → Patterns: {', '.join(arch_patterns) or 'None'}")
-    if be_tools:
-        print(f"   Backend tools: {', '.join(be_tools)}")
-    if qa_tools:
-        print(f"   QA tools: {', '.join(qa_tools)}")
+    print(f"   Total raw dependencies synced: {len(raw_deps)}")
 
 
 def main():

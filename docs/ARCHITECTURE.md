@@ -61,4 +61,4 @@ graph TD
 - **`memory/`**: The state anchors. Prevents the AI from hallucinating missing stack dependencies or design tokens.
 - **`skills/`**: The constraints payload. Domain-specific markdown files (e.g., `frontend-design`, `devops-architect`).
 - **`workflows/`**: The pipelines. Multi-step bash procedures for macro tasks.
-- **`scripts/`**: The cross-platform logic checks. Python automation files like `detect_stack.py` and `verify_changes.py`.
+- **`scripts/`**: Cross-platform Python automation tools (`detect_stack.py`, `verify_changes.py`, `verify_agent.py`).

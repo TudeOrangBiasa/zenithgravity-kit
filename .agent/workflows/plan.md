@@ -25,9 +25,10 @@ Produce a high-standard Technical Design Document (TDD). You must act as a Senio
      - [ ] Check dependencies & Imports
      - [ ] Update state/memory anchors
      - [ ] For UI/UX Tasks: Include `@frontend-design` layout phase and `@audit` / `@polish` quality gates
-     - [ ] Run targeted validation script (`verify_changes.sh`)
+     - [ ] For Backend/Logic Tasks: MANDATORY pass through `@logic-critic` to validate the architecture and find logic flaws.
+     - [ ] Run targeted validation script (`python3 .agent/scripts/verify_changes.py`)
 5. **Rollback Strategy**: Define how to undo changes if something goes wrong.
-6. **Verification Matrix**: Map each phase to a specific `rtk` or `verify_changes.sh` command.
+6. **Verification Matrix**: Map each phase to a specific `rtk` or `python3 .agent/scripts/verify_changes.py` command.
 
 ## Output
 

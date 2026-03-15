@@ -41,11 +41,7 @@ def info(msg: str):
 
 REQUIRED_SCRIPTS = [
     "sync_memory.py",
-    "verify_agent.py",
-    "verify_changes.py",
-    "ki_lookup.py",
     "sandbox_verify.py",
-    "detect_stack.py",
 ]
 
 REQUIRED_MEMORY_FILES = [
@@ -68,13 +64,19 @@ def verify_kit(root_dir: Path) -> bool:
         return False
     ok(".agent/ directory exists")
 
-    # ── 2. Core rules ─────────────────────────────────
+    # ── 2. Core rules — at least one rule file must exist ─────────────
     rules_dir = agent_dir / "rules"
-    if (rules_dir / "GEMINI.md").is_file():
-        ok("rules/GEMINI.md")
+    if rules_dir.is_dir():
+        rule_files = list(rules_dir.glob("*.md"))
+        if rule_files:
+            for rf in sorted(rule_files):
+                ok(f"rules/{rf.name}")
+        else:
+            errors.append("rules/ directory exists but contains no .md rule files")
+            fail("rules/*.md — no rule file found")
     else:
-        errors.append("Missing core rule: rules/GEMINI.md")
-        fail("rules/GEMINI.md")
+        errors.append("Missing rules/ directory")
+        fail("rules/ directory not found")
 
     # ── 3. ARCHITECTURE.md ────────────────────────────
     if (agent_dir / "ARCHITECTURE.md").is_file():

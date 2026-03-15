@@ -58,26 +58,33 @@ def lookup_ki(keywords: list[str]):
 
     for root, dirs, files in os.walk(ki_dir):
         if "metadata.json" in files:
-            path = os.path.join(root, "metadata.json")
+            meta_path = os.path.join(root, "metadata.json")
             try:
-                with open(path, "r") as f:
+                with open(meta_path, "r") as f:
                     raw = f.read()
                 score = score_match(raw, keywords)
+
+                # ── ENHANCEMENT: Also score from artifact file contents ──
+                artifacts_dir = Path(root) / "artifacts"
+                artifact_path = ""
+                if artifacts_dir.exists():
+                    artifact_files = sorted(artifacts_dir.iterdir())
+                    if artifact_files:
+                        artifact_path = str(artifact_files[0])
+                        for af in artifact_files:
+                            try:
+                                artifact_score = score_match(af.read_text(encoding="utf-8", errors="ignore"), keywords)
+                                score = max(score, artifact_score)  # take best match
+                            except Exception:
+                                pass
+
                 if score > 0:
                     ki_name = os.path.basename(root)
                     try:
                         data = json.loads(raw)
                         summary = data.get("summary", "No summary available.")
-                        # Find first artifact if any
-                        artifacts_dir = Path(root) / "artifacts"
-                        artifact_path = ""
-                        if artifacts_dir.exists():
-                            artifact_files = sorted(artifacts_dir.iterdir())
-                            if artifact_files:
-                                artifact_path = str(artifact_files[0])
                     except (json.JSONDecodeError, Exception):
                         summary = "(could not parse metadata)"
-                        artifact_path = ""
 
                     matches.append((score, ki_name, summary, artifact_path))
             except Exception:
@@ -88,14 +95,16 @@ def lookup_ki(keywords: list[str]):
         return
 
     # Sort by relevance score descending
-    matches.sort(key=lambda x: x[0], reverse=True)
+    matches.sort(key=lambda x: (x[0],), reverse=True)
 
     print(f"✅ Found {len(matches)} relevant Knowledge Item(s) (sorted by relevance):\n")
     for score, name, summary, artifact in matches:
         relevance = "●" * min(score, 5)  # max 5 dots
         print(f"  [{relevance}] \033[1m{name}\033[0m (score: {score})")
-        # Trim summary to 120 chars
-        short_summary = (summary[:120] + "...") if len(summary) > 120 else str(summary)
+        # Trim summary to 120 chars — use join to avoid Pyre2 slice false-positive
+        chars = list(summary)
+        truncated = "".join(chars[i] for i in range(min(120, len(chars))))
+        short_summary = (truncated + "...") if len(summary) > 120 else truncated
         print(f"       {short_summary}")
         if artifact:
             print(f"       📄 Artifact: {artifact}")
@@ -108,7 +117,7 @@ def main():
         print("Example: python3 ki_lookup.py vue component")
         sys.exit(0)
 
-    keywords: list[str] = list(sys.argv[1:])
+    keywords: list[str] = list(sys.argv[i] for i in range(1, len(sys.argv)))
     lookup_ki(keywords)
 
 
